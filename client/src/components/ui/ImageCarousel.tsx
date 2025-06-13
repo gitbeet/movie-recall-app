@@ -1,6 +1,7 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import useEmblaCarousel from 'embla-carousel-react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import ImageModal from '../modals/ImageModal';
 
 interface ImageCarouselProps {
   images: string[];
@@ -8,21 +9,36 @@ interface ImageCarouselProps {
 
 const ImageCarousel: React.FC<ImageCarouselProps> = ({ images }) => {
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true }, []);
+  const [selectedImageIndex, setSelectedImageIndex] = useState<number | null>(null);
 
   const scrollPrev = useCallback(() => {
     if (emblaApi) emblaApi.scrollPrev();
   }, [emblaApi]);
 
-  const scrollNext = useCallback(() => {
+    const scrollNext = useCallback(() => {
     if (emblaApi) emblaApi.scrollNext();
   }, [emblaApi]);
+
+  const handlePrevImage = () => {
+    if (selectedImageIndex !== null) {
+      const newIndex = selectedImageIndex === 0 ? images.length - 1 : selectedImageIndex - 1;
+      setSelectedImageIndex(newIndex);
+    }
+  };
+
+  const handleNextImage = () => {
+    if (selectedImageIndex !== null) {
+      const newIndex = selectedImageIndex === images.length - 1 ? 0 : selectedImageIndex + 1;
+      setSelectedImageIndex(newIndex);
+    }
+  };
 
   return (
     <div className="relative group">
       <div className="overflow-hidden" ref={emblaRef}>
         <div className="flex -ml-4">
           {images.map((src, index) => (
-            <div className="flex-grow-0 flex-shrink-0 w-full min-w-0 pl-4 sm:w-1/2 md:w-1/3 lg:w-1/4" key={index}>
+                        <div className="flex-grow-0 flex-shrink-0 w-full min-w-0 pl-4 sm:w-1/2 md:w-1/3 lg:w-1/4 cursor-pointer" key={index} onClick={() => setSelectedImageIndex(index)}>
               <img src={src} alt={`Carousel image ${index + 1}`} className="w-full h-auto object-cover rounded-lg" />
             </div>
           ))}
@@ -41,8 +57,17 @@ const ImageCarousel: React.FC<ImageCarouselProps> = ({ images }) => {
         onClick={scrollNext}
         aria-label="Next slide"
       >
-        <ChevronRight className="w-6 h-6" />
+                <ChevronRight className="w-6 h-6" />
       </button>
+
+            {selectedImageIndex !== null && (
+        <ImageModal 
+          imageUrl={images[selectedImageIndex]} 
+          onClose={() => setSelectedImageIndex(null)} 
+          onNext={handleNextImage}
+          onPrev={handlePrevImage}
+        />
+      )}
     </div>
   );
 };
