@@ -8,9 +8,9 @@ const Layout = () => {
       <nav className="bg-card border-b border-border">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
-              <Link to="/" className="flex items-start gap-1 text-lg text-primary">
-                <Film className="h-6 w-6" />
-                <span>flickfinder.<b>ai</b></span>
+              <Link to="/" className="flex items-start gap-1 text-lg">
+                <Film className="h-6 w-6 text-primary" />
+                <span>flickfinder.<b className="text-primary">ai</b></span>
               </Link>
             <ModeToggle />
           </div>
