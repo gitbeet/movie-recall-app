@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Badge } from '@/components/ui/badge';
+import ImageCarousel from '@/components/ui/ImageCarousel';
 import { PlayCircle } from 'lucide-react';
 import TrailerModal from '@/components/modals/TrailerModal';
 
@@ -94,13 +95,7 @@ const MovieDetailsPage = () => {
 
         <div className="mt-12">
           <h2 className="text-3xl font-bold mb-6 text-foreground">Gallery</h2>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {movie.images.backdrops.slice(0, 4).map((img, index) => (
-              <div key={index} className="overflow-hidden rounded-lg shadow-lg">
-                <img src={img} alt={`Backdrop ${index + 1}`} className="w-full h-full object-cover" />
-              </div>
-            ))}
-          </div>
+                    <ImageCarousel images={movie.images.backdrops} />
         </div>
       </div>
 
