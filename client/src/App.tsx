@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { Button } from "./components/ui/button";
-import { Input } from "./components/ui/input";
-import { Card, CardContent, CardHeader, CardTitle } from "./components/ui/card";
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
 
 interface MovieResult {
   title: string;
@@ -10,106 +10,98 @@ interface MovieResult {
   releaseYear: string;
 }
 
-interface Message {
-  sender: 'user' | 'bot';
-  text?: string;
-  movie?: MovieResult;
-}
-
 function App() {
-  const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
+  const [movieResults, setMovieResults] = useState<MovieResult[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const handleSendMessage = async () => {
+  const handleSearch = async () => {
     if (!input.trim()) return;
 
-    const userMessage: Message = { sender: 'user', text: input };
-    setMessages(prev => [...prev, userMessage]);
-    setInput('');
     setIsLoading(true);
+    setError(null);
+    setMovieResults([]);
 
     try {
       const apiUrl = `${import.meta.env.VITE_API_BASE_URL}/api/find-movie`;
       const response = await fetch(apiUrl, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ description: input }),
       });
 
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        const errorData = await response.json().catch(() => ({ error: 'An unknown error occurred' }));
+        throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
       }
 
-      const movieResult: MovieResult = await response.json();
-      const botMessage: Message = { sender: 'bot', movie: movieResult };
-      setMessages(prev => [...prev, botMessage]);
+      const results: MovieResult[] = await response.json();
+      setMovieResults(results);
 
-    } catch (error) {
-      console.error("Failed to find movie:", error);
-      const errorMessage: Message = { sender: 'bot', text: 'Sorry, I had trouble finding that movie. Could you try another description?' };
-      setMessages(prev => [...prev, errorMessage]);
+    } catch (err: any) {
+      console.error("Failed to find movie:", err);
+      setError(err.message || 'Sorry, I had trouble finding that movie. Could you try another description?');
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <div className="flex flex-col h-screen bg-background text-foreground">
-      <header className="bg-primary text-primary-foreground p-4 text-center shadow-md">
-        <h1 className="text-2xl font-bold">CineBot</h1>
-        <p className="text-sm">Describe a movie, and I'll find it for you!</p>
-      </header>
+    <div className="min-h-screen bg-background text-foreground p-4 sm:p-6 lg:p-8">
+      <div className="max-w-6xl mx-auto">
+        <header className="text-center mb-8">
+          <h1 className="text-4xl sm:text-5xl font-bold mb-2">CineFind</h1>
+          <p className="text-lg text-muted-foreground">Can't remember a movie? Describe it here, and let AI do the rest.</p>
+        </header>
 
-      <main className="flex-1 overflow-y-auto p-4 space-y-4">
-        {messages.map((msg, index) => (
-          <div key={index} className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
-            <div className={`max-w-lg p-3 rounded-lg ${msg.sender === 'user' ? 'bg-primary text-primary-foreground' : 'bg-muted'}`}>
-              {msg.text && <p>{msg.text}</p>}
-              {msg.movie && (
-                <Card className="w-full max-w-sm bg-card text-card-foreground">
-                  <CardHeader className="p-0">
-                    <img src={msg.movie.posterUrl} alt={msg.movie.title} className="rounded-t-lg w-full object-cover" />
-                  </CardHeader>
-                  <CardContent className="p-4">
-                    <CardTitle className="text-xl mb-2">{msg.movie.title} ({msg.movie.releaseYear})</CardTitle>
-                    <p className="text-sm text-muted-foreground">{msg.movie.description}</p>
-                  </CardContent>
-                </Card>
-              )}
-            </div>
+        <main>
+          <div className="flex space-x-2 mb-8 max-w-2xl mx-auto">
+            <Input
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
+              placeholder="e.g., 'A thief who enters people's dreams to steal secrets'"
+              disabled={isLoading}
+              className="text-lg p-6"
+            />
+            <Button onClick={handleSearch} disabled={isLoading} className="text-lg p-6">
+              Search
+            </Button>
           </div>
-        ))}
-        {isLoading && (
-          <div className="flex justify-start">
-            <div className="bg-muted p-3 rounded-lg">
-              <p><i>CineBot is thinking...</i></p>
-            </div>
-          </div>
-        )}
-      </main>
 
-      <footer className="p-4 bg-background border-t">
-        <div className="flex items-center space-x-2">
-          <Input 
-            type="text" 
-            placeholder="e.g., a movie about a rat that becomes a chef in Paris" 
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
-            disabled={isLoading}
-            className="flex-1"
-          />
-          <Button onClick={handleSendMessage} disabled={isLoading}>
-            {isLoading ? 'Sending...' : 'Send'}
-          </Button>
-        </div>
-      </footer>
+          <div className="results-area">
+            {isLoading && <p className="text-center">Finding movies...</p>}
+            {error && <p className="text-center text-destructive">{error}</p>}
+            {!isLoading && !error && movieResults.length > 0 && (
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                {movieResults.map((movie, index) => (
+                  <Card key={index} className="bg-card text-card-foreground overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300">
+                    <CardHeader className="p-0">
+                      {movie.posterUrl ? (
+                        <img src={movie.posterUrl} alt={movie.title} className="w-full h-auto object-cover" />
+                      ) : (
+                        <div className="h-48 flex items-center justify-center bg-secondary">
+                          <p className="text-muted-foreground">No Poster Available</p>
+                        </div>
+                      )}
+                    </CardHeader>
+                    <CardContent className="p-4">
+                      <CardTitle className="text-lg mb-2 truncate" title={movie.title}>{movie.title} ({movie.releaseYear})</CardTitle>
+                      <p className="text-sm text-muted-foreground line-clamp-3">{movie.description}</p>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            )}
+            {!isLoading && !error && movieResults.length === 0 && (
+                 <p className="text-center text-muted-foreground">Results will appear here.</p>
+            )}
+          </div>
+        </main>
+      </div>
     </div>
   );
 }
 
 export default App;
-

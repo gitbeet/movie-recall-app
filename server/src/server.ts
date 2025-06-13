@@ -22,13 +22,13 @@ app.post('/api/find-movie', async (req: Request, res: Response) => {
   }
 
   try {
-    // Step 1: Get movie title from OpenAI
+    // Step 1: Get a list of movie titles from OpenAI
     const openAIResponse = await axios.post('https://api.openai.com/v1/chat/completions', {
       model: 'gpt-3.5-turbo',
       messages: [
         {
           role: 'system',
-          content: 'You are a movie expert. Based on the user\'s description, identify the most likely movie title. Respond with only the movie title and nothing else.'
+          content: 'You are a movie expert. Based on the user\'s description, identify up to 5 possible movie titles. Respond with only a valid JSON array of strings, ordered from most likely to least likely. For example: ["Movie Title 1", "Movie Title 2"]'
         },
         {
           role: 'user',
@@ -41,29 +41,45 @@ app.post('/api/find-movie', async (req: Request, res: Response) => {
       }
     });
 
-    const movieTitle = openAIResponse.data.choices[0].message.content.trim();
+    const openAIContent = openAIResponse.data.choices[0].message.content.trim();
+    let movieTitles: string[];
 
-    // Step 2: Get movie details from TMDB
-    const tmdbResponse = await axios.get('https://api.themoviedb.org/3/search/movie', {
-      params: {
-        api_key: TMDB_API_KEY,
-        query: movieTitle
+    try {
+      movieTitles = JSON.parse(openAIContent);
+      if (!Array.isArray(movieTitles)) {
+        movieTitles = [openAIContent];
       }
-    });
-
-    if (tmdbResponse.data.results.length === 0) {
-      return res.status(404).json({ error: 'Movie not found on TMDB.' });
+    } catch (e) {
+      console.warn("OpenAI response was not valid JSON, treating as a single title.");
+      movieTitles = [openAIContent];
     }
 
-    const movie = tmdbResponse.data.results[0];
-
-    // Step 3: Send combined data to the client
-    res.json({
-      title: movie.title,
-      description: movie.overview,
-      posterUrl: `https://image.tmdb.org/t/p/w500${movie.poster_path}`,
-      releaseYear: movie.release_date.split('-')[0]
+    // Step 2: Fetch details for each movie title from TMDB
+    const moviePromises = movieTitles.map(async (title) => {
+      if (!title) return null;
+      const tmdbResponse = await axios.get('https://api.themoviedb.org/3/search/movie', {
+        params: { api_key: TMDB_API_KEY, query: title }
+      });
+      return tmdbResponse.data.results.length > 0 ? tmdbResponse.data.results[0] : null;
     });
+
+    const moviesData = await Promise.all(moviePromises);
+
+    const movieResults = moviesData
+      .filter((movie): movie is NonNullable<typeof movie> => movie !== null)
+      .map(movie => ({
+        title: movie.title,
+        description: movie.overview,
+        posterUrl: movie.poster_path ? `https://image.tmdb.org/t/p/w500${movie.poster_path}` : '',
+        releaseYear: movie.release_date ? movie.release_date.split('-')[0] : 'N/A'
+      }));
+
+    if (movieResults.length === 0) {
+      return res.status(404).json({ error: 'Could not find any matching movies.' });
+    }
+
+    // Step 3: Send the list of movies to the client
+    res.json(movieResults);
 
   } catch (error) {
     if (axios.isAxiosError(error)) {
