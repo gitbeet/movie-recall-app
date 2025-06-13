@@ -105,7 +105,7 @@ app.get('/api/movie/:id', async (req: Request, res: Response) => {
     const response = await axios.get(movieDetailsUrl, {
       params: {
         api_key: tmdbApiKey,
-        append_to_response: 'images'
+        append_to_response: 'images,videos'
       }
     });
 
@@ -123,7 +123,10 @@ app.get('/api/movie/:id', async (req: Request, res: Response) => {
       images: {
         backdrops: movieData.images.backdrops.map((img: any) => `https://image.tmdb.org/t/p/w1280${img.file_path}`),
         posters: movieData.images.posters.map((img: any) => `https://image.tmdb.org/t/p/w500${img.file_path}`)
-      }
+      },
+      trailerUrl: movieData.videos.results.find((v: any) => v.site === 'YouTube' && v.type === 'Trailer')?.key
+        ? `https://www.youtube.com/embed/${movieData.videos.results.find((v: any) => v.site === 'YouTube' && v.type === 'Trailer').key}`
+        : ''
     };
 
     res.json(result);

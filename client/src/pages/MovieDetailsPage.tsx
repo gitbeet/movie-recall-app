@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Badge } from '@/components/ui/badge';
-
+import { PlayCircle } from 'lucide-react';
+import TrailerModal from '@/components/modals/TrailerModal';
 
 interface MovieDetails {
   id: number;
@@ -16,6 +17,7 @@ interface MovieDetails {
     backdrops: string[];
     posters: string[];
   };
+  trailerUrl: string;
 }
 
 const MovieDetailsPage = () => {
@@ -23,6 +25,7 @@ const MovieDetailsPage = () => {
   const [movie, setMovie] = useState<MovieDetails | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isTrailerOpen, setIsTrailerOpen] = useState(false);
 
   useEffect(() => {
     const fetchMovieDetails = async () => {
@@ -74,6 +77,18 @@ const MovieDetailsPage = () => {
               <span className="text-xl font-bold text-primary">★ {movie.rating.toFixed(1)}</span>
             </div>
             <p className="text-base leading-relaxed text-muted-foreground">{movie.description}</p>
+
+            {movie.trailerUrl && (
+              <div className="mt-6">
+                <button 
+                  className="bg-primary hover:bg-primary/90 text-primary-foreground font-bold py-2 px-6 rounded-full shadow-lg flex items-center gap-2 transition-transform transform"
+                  onClick={() => setIsTrailerOpen(true)}
+                >
+                  <PlayCircle size={24} />
+                  <span>Watch Trailer</span>
+                </button>
+              </div>
+            )}
           </div>
         </div>
 
@@ -88,6 +103,13 @@ const MovieDetailsPage = () => {
           </div>
         </div>
       </div>
+
+      {isTrailerOpen && movie.trailerUrl && (
+        <TrailerModal 
+          trailerUrl={movie.trailerUrl}
+          onClose={() => setIsTrailerOpen(false)}
+        />
+      )}
     </div>
   );
 };
