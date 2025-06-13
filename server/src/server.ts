@@ -68,6 +68,7 @@ app.post('/api/find-movie', async (req: Request, res: Response) => {
     const movieResults = moviesData
       .filter((movie): movie is NonNullable<typeof movie> => movie !== null)
       .map(movie => ({
+        id: movie.id,
         title: movie.title,
         description: movie.overview,
         posterUrl: movie.poster_path ? `https://image.tmdb.org/t/p/w500${movie.poster_path}` : '',
@@ -88,6 +89,52 @@ app.post('/api/find-movie', async (req: Request, res: Response) => {
       console.error('Error processing request:', error);
     }
     res.status(500).json({ error: 'Failed to process your request.' });
+  }
+});
+
+app.get('/api/movie/:id', async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const tmdbApiKey = process.env.TMDB_API_KEY;
+
+  if (!tmdbApiKey) {
+    return res.status(500).json({ error: 'TMDB API key is not configured.' });
+  }
+
+  try {
+    const movieDetailsUrl = `https://api.themoviedb.org/3/movie/${id}`;
+    const response = await axios.get(movieDetailsUrl, {
+      params: {
+        api_key: tmdbApiKey,
+        append_to_response: 'images'
+      }
+    });
+
+    const movieData = response.data;
+
+    const result = {
+      id: movieData.id,
+      title: movieData.title,
+      description: movieData.overview,
+      posterUrl: movieData.poster_path ? `https://image.tmdb.org/t/p/w500${movieData.poster_path}` : '',
+      releaseYear: movieData.release_date ? movieData.release_date.split('-')[0] : 'N/A',
+      genres: movieData.genres.map((g: any) => g.name),
+      rating: movieData.vote_average,
+      backdropUrl: movieData.backdrop_path ? `https://image.tmdb.org/t/p/original${movieData.backdrop_path}` : '',
+      images: {
+        backdrops: movieData.images.backdrops.map((img: any) => `https://image.tmdb.org/t/p/w1280${img.file_path}`),
+        posters: movieData.images.posters.map((img: any) => `https://image.tmdb.org/t/p/w500${img.file_path}`)
+      }
+    };
+
+    res.json(result);
+
+  } catch (error: any) {
+    console.error('Error fetching movie details from TMDB:', error.message);
+    if (error.response) {
+      res.status(error.response.status).json({ error: `Failed to fetch movie details: ${error.response.statusText}` });
+    } else {
+      res.status(500).json({ error: 'An internal server error occurred while fetching movie details.' });
+    }
   }
 });
 
