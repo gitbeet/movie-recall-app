@@ -40,19 +40,20 @@ const SearchPage = () => {
             {!isLoading && !error && movieResults.length > 0 && (
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                 {movieResults.map((movie, index) => (
-                  <Card key={index} onClick={() => handleCardClick(movie)} className="bg-card text-card-foreground overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300 cursor-pointer">
+                  <Card key={index} onClick={() => handleCardClick(movie)} className="group bg-card text-card-foreground overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer pt-0">
                     <CardHeader className="p-0">
                       {movie.posterUrl ? (
-                        <img src={movie.posterUrl} alt={movie.title} className="w-full h-auto object-cover" />
+                        <img src={movie.posterUrl} alt={movie.title} className="w-full object-cover aspect-[2/3] transition-transform duration-300 group-hover:scale-105" />
                       ) : (
-                        <div className="h-48 flex items-center justify-center bg-secondary">
-                          <p className="text-muted-foreground">No Poster Available</p>
+                        <div className="flex items-center justify-center bg-secondary aspect-[2/3]">
+                          <p className="text-muted-foreground text-sm">No Poster Available</p>
                         </div>
                       )}
                     </CardHeader>
                     <CardContent className="p-4">
-                      <CardTitle className="text-lg mb-2 truncate" title={movie.title}>{movie.title} ({movie.releaseYear})</CardTitle>
-                      <p className="text-sm text-muted-foreground line-clamp-3">{movie.description}</p>
+                      <CardTitle className="text-lg font-bold truncate" title={movie.title}>{movie.title}</CardTitle>
+                      <p className="text-sm text-muted-foreground">{movie.releaseYear}</p>
+                      <p className="text-sm text-muted-foreground line-clamp-3 mt-2">{movie.description}</p>
                     </CardContent>
                   </Card>
                 ))}

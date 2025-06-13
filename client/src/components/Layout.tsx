@@ -1,5 +1,6 @@
 import { Link, Outlet } from 'react-router-dom';
 import { ModeToggle } from './ui/mode-toggle';
+import { Film } from 'lucide-react';
 
 const Layout = () => {
   return (
@@ -7,11 +8,10 @@ const Layout = () => {
       <nav className="bg-card border-b border-border">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
-            <div className="flex items-center">
-              <Link to="/" className="text-2xl font-bold text-primary">
-                CineFind
+              <Link to="/" className="flex items-start gap-1 text-lg text-primary">
+                <Film className="h-6 w-6" />
+                <span>flickfinder.<b>ai</b></span>
               </Link>
-            </div>
             <ModeToggle />
           </div>
         </div>

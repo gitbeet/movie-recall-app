@@ -64,7 +64,7 @@ const MovieDetailsPage = () => {
         <div className="absolute inset-0 bg-black/60 backdrop-blur-sm"></div>
       </div>
 
-      <div className="max-w-6xl mx-auto p-4 sm:p-6 lg:p-8 -mt-24 md:-mt-48 relative z-10">
+      <div className="max-w-6xl mx-auto p-4 sm:p-6 lg:p-8 -mt-40 md:-mt-64 relative z-10">
         <div className="md:flex md:space-x-8 items-start">
           <div className="md:w-1/3 flex-shrink-0">
             <img src={movie.posterUrl} alt={movie.title} className="w-full rounded-lg shadow-2xl" />
