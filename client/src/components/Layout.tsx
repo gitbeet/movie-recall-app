@@ -1,4 +1,5 @@
 import { Link, Outlet } from 'react-router-dom';
+import { ModeToggle } from './ui/mode-toggle';
 
 const Layout = () => {
   return (
@@ -11,6 +12,7 @@ const Layout = () => {
                 CineFind
               </Link>
             </div>
+            <ModeToggle />
           </div>
         </div>
       </nav>

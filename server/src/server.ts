@@ -28,7 +28,7 @@ app.post('/api/find-movie', async (req: Request, res: Response) => {
       messages: [
         {
           role: 'system',
-          content: 'You are a movie expert. Based on the user\'s description, identify up to 5 possible movie titles. Respond with only a valid JSON array of strings, ordered from most likely to least likely. For example: ["Movie Title 1", "Movie Title 2"]'
+          content: 'You are a movie expert. Based on the user\'s description, identify up to 10 possible movie titles. Respond with only a valid JSON array of strings, ordered from most likely to least likely. For example: ["Movie Title 1", "Movie Title 2"]'
         },
         {
           role: 'user',
@@ -57,13 +57,18 @@ app.post('/api/find-movie', async (req: Request, res: Response) => {
     // Step 2: Fetch details for each movie title from TMDB
     const moviePromises = movieTitles.map(async (title) => {
       if (!title) return null;
-      const tmdbResponse = await axios.get('https://api.themoviedb.org/3/search/movie', {
-        params: { api_key: TMDB_API_KEY, query: title }
+            const tmdbResponse = await axios.get('https://api.themoviedb.org/3/search/movie', {
+        params: { 
+          api_key: TMDB_API_KEY, 
+          query: title,
+          sort_by: 'popularity.desc'
+        }
       });
-      return tmdbResponse.data.results.length > 0 ? tmdbResponse.data.results[0] : null;
+      return tmdbResponse.data.results.length > 0 ? tmdbResponse.data.results : null;
     });
 
-    const moviesData = await Promise.all(moviePromises);
+    const moviesDataArrays = await Promise.all(moviePromises);
+    const moviesData = moviesDataArrays.flat();
 
     const movieResults = moviesData
       .filter((movie): movie is NonNullable<typeof movie> => movie !== null)
@@ -75,12 +80,14 @@ app.post('/api/find-movie', async (req: Request, res: Response) => {
         releaseYear: movie.release_date ? movie.release_date.split('-')[0] : 'N/A'
       }));
 
-    if (movieResults.length === 0) {
+    const finalResults = movieResults.slice(0, 10);
+
+    if (finalResults.length === 0) {
       return res.status(404).json({ error: 'Could not find any matching movies.' });
     }
 
     // Step 3: Send the list of movies to the client
-    res.json(movieResults);
+    res.json(finalResults);
 
   } catch (error) {
     if (axios.isAxiosError(error)) {
