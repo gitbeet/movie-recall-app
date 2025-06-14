@@ -16,6 +16,7 @@ interface SearchContextType {
   isLoading: boolean;
   error: string | null;
   handleSearch: (searchInput: string) => Promise<void>;
+  clearResults: () => void;
 }
 
 const SearchContext = createContext<SearchContextType | undefined>(undefined);
@@ -34,6 +35,11 @@ export const SearchProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     localStorage.setItem("movieResults", JSON.stringify(movieResults));
   }, [movieResults]);
+
+  const clearResults = () => {
+    setMovieResults([]);
+    localStorage.removeItem("movieResults");
+  };
 
   const handleSearch = async (searchInput: string) => {
     if (!searchInput.trim()) return;
@@ -72,7 +78,7 @@ export const SearchProvider = ({ children }: { children: ReactNode }) => {
 
   return (
     <SearchContext.Provider
-      value={{ input, setInput, movieResults, isLoading, error, handleSearch }}
+      value={{ input, setInput, movieResults, isLoading, error, handleSearch, clearResults }}
     >
       {children}
     </SearchContext.Provider>

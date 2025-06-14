@@ -7,8 +7,15 @@ import { useSearch } from "@/context/SearchContext";
 
 const SearchPage = () => {
   const navigate = useNavigate();
-  const { input, setInput, movieResults, isLoading, error, handleSearch } =
-    useSearch();
+  const {
+    input,
+    setInput,
+    movieResults,
+    isLoading,
+    error,
+    handleSearch,
+    clearResults,
+  } = useSearch();
 
   const onSearchClick = () => {
     handleSearch(input);
@@ -24,7 +31,7 @@ const SearchPage = () => {
   };
 
   return (
-    <div className="p-4 sm:p-6 lg:p-8">
+    <div className="p-4 sm:p-6 lg:p-8 relative min-h-screen overflow-x-hidden">
       <div className="max-w-6xl mx-auto">
         <main>
           {/* Welcome message and tagline */}
@@ -103,13 +110,53 @@ const SearchPage = () => {
             )}
             {error && <p className="text-center text-destructive">{error}</p>}
             {!isLoading && !error && movieResults.length > 0 && (
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                {movieResults.map((movie) => (
-                  <div key={movie.id} onClick={() => handleCardClick(movie)}>
-                    <MovieCard {...movie} />
+              <>
+                <div className="flex justify-end mb-4">
+                  <Button variant="outline" size="sm" onClick={clearResults}>
+                    Clear Results
+                  </Button>
+                </div>
+                {/* Top 3 results */}
+                <div className="mb-8">
+                  <div className="text-lg font-semibold text-primary mb-2">
+                    You were probably looking for one of these
                   </div>
-                ))}
-              </div>
+                  <div className="flex flex-col sm:flex-row gap-4 items-stretch">
+                    {movieResults.slice(0, 3).map((movie, idx) => (
+                      <div
+                        key={movie.id}
+                        className="flex-1 min-w-0"
+                        onClick={() => handleCardClick(movie)}
+                      >
+                        <MovieCard
+                          {...movie}
+                          topPick={
+                            idx === 0 ? "top" : idx === 1 ? "second" : "third"
+                          }
+                        />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                {/* More results grid */}
+                {movieResults.length > 3 && (
+                  <>
+                    <div className="text-base font-medium mb-3 text-muted-foreground">
+                      More results
+                    </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                      {movieResults.slice(3).map((movie) => (
+                        <div
+                          key={movie.id}
+                          onClick={() => handleCardClick(movie)}
+                        >
+                          <MovieCard {...movie} />
+                        </div>
+                      ))}
+                    </div>
+                  </>
+                )}
+              </>
             )}
           </div>
         </main>
