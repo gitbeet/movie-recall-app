@@ -15,6 +15,7 @@ interface SearchContextType {
   movieResults: MovieResult[];
   isLoading: boolean;
   error: string | null;
+  setError: (err: string | null) => void;
   handleSearch: (searchInput: string) => Promise<void>;
   clearResults: () => void;
 }
@@ -78,7 +79,7 @@ export const SearchProvider = ({ children }: { children: ReactNode }) => {
 
   return (
     <SearchContext.Provider
-      value={{ input, setInput, movieResults, isLoading, error, handleSearch, clearResults }}
+      value={{ input, setInput, movieResults, isLoading, error, setError, handleSearch, clearResults }}
     >
       {children}
     </SearchContext.Provider>

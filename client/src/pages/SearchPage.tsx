@@ -1,3 +1,4 @@
+import React from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import MovieCard from "@/components/MovieCard";
@@ -13,12 +14,57 @@ const SearchPage = () => {
     movieResults,
     isLoading,
     error,
+    setError,
     handleSearch,
     clearResults,
   } = useSearch();
 
+  // Animated placeholder logic
+  const examplePrompts = [
+    "A movie where a man relives the same day",
+    "Tom Hanks stranded on an island",
+    "A team enters people's dreams to steal secrets",
+    "A girl travels to a magical land with a yellow brick road",
+    "A shark terrorizes a beach town",
+  ];
+  const [placeholder, setPlaceholder] = React.useState(examplePrompts[0]);
+  const [typingIdx, setTypingIdx] = React.useState(0);
+  const [charIdx, setCharIdx] = React.useState(0);
+  const [deleting, setDeleting] = React.useState(false);
+
+  React.useEffect(() => {
+    if (input.length > 0) return; // Don't animate if user is typing
+    const prompt = examplePrompts[typingIdx];
+    let timeout: NodeJS.Timeout;
+    if (!deleting) {
+      if (charIdx < prompt.length) {
+        timeout = setTimeout(() => setCharIdx(charIdx + 1), 55);
+      } else {
+        timeout = setTimeout(() => setDeleting(true), 1200);
+      }
+    } else {
+      if (charIdx > 0) {
+        timeout = setTimeout(() => setCharIdx(charIdx - 1), 20);
+      } else {
+        setDeleting(false);
+        setTypingIdx((typingIdx + 1) % examplePrompts.length);
+      }
+    }
+    setPlaceholder(prompt.slice(0, charIdx));
+    return () => clearTimeout(timeout);
+  }, [charIdx, deleting, typingIdx, input]);
+
   const onSearchClick = () => {
     handleSearch(input);
+  };
+
+  // Handle Enter/Shift+Enter in textarea
+  const handleInputKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      onSearchClick();
+    }
+    // else allow default (including Shift+Enter for newline)
   };
 
   const handleCardClick = (movie: any) => {
@@ -35,7 +81,7 @@ const SearchPage = () => {
       <div className="max-w-6xl mx-auto">
         <main>
           {/* Welcome message and tagline */}
-          {!isLoading && !error && movieResults.length === 0 && (
+          {movieResults.length === 0 && (
             <div className="flex flex-col items-center justify-center my-16">
               <h1 className="text-4xl sm:text-5xl font-extrabold text-center mb-4 text-primary ">
                 Can't Remember That Movie?
@@ -78,27 +124,25 @@ const SearchPage = () => {
             </div>
           )}
 
-          <div className="flex space-x-2 relative my-12 max-w-2xl mx-auto">
+          <div className="flex space-x-2 relative my-12 max-w-2xl mx-auto items-center">
             <AutoResizeTextArea
               value={input}
-              onChange={(e) => setInput(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" && !e.shiftKey) {
-                  e.preventDefault();
-                  onSearchClick();
-                }
-                // else allow default (including Shift+Enter for newline)
+              onChange={(e) => {
+                if (error) setError(null);
+                setInput(e.target.value);
               }}
-              placeholder="Describe the movie..."
-              disabled={isLoading}
-              className="text-lg  w-full min-h-[48px] max-h-40"
+              onKeyDown={handleInputKeyDown}
+              maxHeight={180}
+              placeholder={placeholder || "Describe a scene, actor, or plot..."}
+              aria-label="Movie description"
+              autoFocus
             />
             <Button
               onClick={onSearchClick}
               disabled={isLoading}
-              className="p-6 aspect-square"
+              className="aspect-square h-full"
             >
-              <Search className="w-6 h-6" />
+              <Search />
             </Button>
           </div>
 
@@ -112,7 +156,14 @@ const SearchPage = () => {
             {!isLoading && !error && movieResults.length > 0 && (
               <>
                 <div className="flex justify-end mb-4">
-                  <Button variant="outline" size="sm" onClick={clearResults}>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      clearResults();
+                      setInput("");
+                    }}
+                  >
                     <X />
                     Clear Results
                   </Button>
