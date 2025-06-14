@@ -14,10 +14,10 @@ const MovieCard: React.FC<MovieCardProps> = ({ id, title, description, posterUrl
   const navigate = useNavigate();
 
   return (
-    <Card className="h-full flex flex-col pt-0 cursor-pointer hover:shadow-lg transition-shadow overflow-hidden" onClick={() => navigate(`/movie/${id}`)}>
+    <Card className="h-full flex flex-col pt-0 cursor-pointer hover:shadow-md transition-shadow overflow-hidden group/card" onClick={() => navigate(`/movie/${id}`)}>
       <CardHeader className="p-0 flex-shrink-0">
         {posterUrl ? (
-          <img src={posterUrl} alt={title} className="w-full aspect-[2/3] object-cover" />
+          <img src={posterUrl} alt={title} className="w-full aspect-[2/3] object-cover group-hover/card:scale-105 transition-all duration-300" />
         ) : (
           <div className="w-full aspect-[2/3] flex items-center justify-center bg-muted text-muted-foreground text-center text-xs sm:text-sm font-semibold rounded-md">
             No poster available

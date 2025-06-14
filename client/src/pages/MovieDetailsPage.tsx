@@ -119,7 +119,65 @@ const MovieDetailsPage = () => {
   }, [id]);
 
   if (isLoading)
-    return <p className="text-center mt-12">Loading movie details...</p>;
+    return (
+      <div className="w-full animate-pulse">
+        {/* Backdrop skeleton */}
+        <div className="w-full h-[30vh] md:h-[50vh] bg-muted/60" />
+        <div className="max-w-6xl mx-auto p-4 sm:p-6 lg:p-8 -mt-40 md:-mt-64 relative z-10 space-y-16">
+          <div className="md:flex md:space-x-8 items-start">
+            {/* Poster skeleton */}
+            <div className="md:w-1/3 flex-shrink-0">
+              <div className="w-full aspect-[2/3] bg-muted rounded-lg shadow-2xl" />
+            </div>
+            {/* Details skeleton */}
+            <div className="md:w-2/3 mt-6 md:mt-0 bg-card text-card-foreground p-8 rounded-lg shadow-xl space-y-4">
+              <div className="h-8 w-2/3 bg-muted rounded" /> {/* Title */}
+              <div className="flex gap-2">
+                <div className="h-6 w-20 bg-muted rounded" />
+                <div className="h-6 w-16 bg-muted rounded" />
+              </div>
+              <div className="h-6 w-24 bg-muted rounded" /> {/* Rating */}
+              <div className="h-16 w-full bg-muted rounded" /> {/* Description */}
+              <div className="flex gap-2 mt-6">
+                <div className="h-10 w-32 bg-muted rounded" />
+                <div className="h-10 w-40 bg-muted rounded" />
+              </div>
+            </div>
+          </div>
+          {/* Cast skeleton */}
+          <div>
+            <div className="h-8 w-40 bg-muted rounded mb-6" />
+            <div className="flex gap-6 overflow-x-auto pb-2">
+              {Array.from({ length: 6 }).map((_, i) => (
+                <div key={i} className="flex flex-col items-center min-w-[100px]">
+                  <div className="w-20 h-20 rounded-full bg-muted mb-2" />
+                  <div className="h-4 w-16 bg-muted rounded mb-1" />
+                  <div className="h-3 w-20 bg-muted rounded" />
+                </div>
+              ))}
+            </div>
+          </div>
+          {/* Gallery skeleton */}
+          <div>
+            <div className="h-8 w-32 bg-muted rounded mb-6" />
+            <div className="flex gap-4">
+              {Array.from({ length: 4 }).map((_, i) => (
+                <div key={i} className="w-48 h-28 bg-muted rounded" />
+              ))}
+            </div>
+          </div>
+          {/* Similar Movies skeleton */}
+          <div>
+            <div className="h-8 w-56 bg-muted rounded mb-6" />
+            <div className="flex gap-4">
+              {Array.from({ length: 5 }).map((_, i) => (
+                <div key={i} className="w-56 h-80 bg-muted rounded" />
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    );
   if (error)
     return <p className="text-center text-destructive mt-12">Error: {error}</p>;
   if (!movie) return <p className="text-center mt-12">Movie not found.</p>;
