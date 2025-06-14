@@ -2,6 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
+import { Loader2 } from 'lucide-react';
 import { useSearch } from '@/context/SearchContext';
 
 const SearchPage = () => {
@@ -35,7 +36,11 @@ const SearchPage = () => {
           </div>
 
           <div className="results-area">
-            {isLoading && <p className="text-center">Finding movies...</p>}
+            {isLoading && (
+              <div className="flex justify-center items-center py-12">
+                <Loader2 className="h-12 w-12 animate-spin text-primary" />
+              </div>
+            )}
             {error && <p className="text-center text-destructive">{error}</p>}
             {!isLoading && !error && movieResults.length > 0 && (
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">

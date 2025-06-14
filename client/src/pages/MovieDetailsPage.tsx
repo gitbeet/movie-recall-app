@@ -1,9 +1,19 @@
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import ImageCarousel from '@/components/ui/ImageCarousel';
-import { PlayCircle } from 'lucide-react';
+import { PlayCircle, Bookmark } from 'lucide-react';
 import TrailerModal from '@/components/modals/TrailerModal';
+
+interface CastMember {
+  id: number;
+  name: string;
+  character: string;
+  profileUrl: string | null;
+  imdbUrl?: string | null;
+  tmdbUrl?: string;
+}
 
 interface MovieDetails {
   id: number;
@@ -19,6 +29,7 @@ interface MovieDetails {
     posters: string[];
   };
   trailerUrl: string;
+  cast?: CastMember[];
 }
 
 const MovieDetailsPage = () => {
@@ -80,22 +91,72 @@ const MovieDetailsPage = () => {
             <p className="text-base leading-relaxed text-muted-foreground">{movie.description}</p>
 
             {movie.trailerUrl && (
-              <div className="mt-6">
-                <button 
-                  className="bg-primary hover:bg-primary/90 text-primary-foreground font-bold py-2 px-6 rounded-full shadow-lg flex items-center gap-2 transition-transform transform"
-                  onClick={() => setIsTrailerOpen(true)}
-                >
-                  <PlayCircle size={24} />
-                  <span>Watch Trailer</span>
-                </button>
+              <div className="mt-6 flex items-center gap-1.5">
+                <Button size="lg"
+  onClick={() => setIsTrailerOpen(true)}
+>
+  <PlayCircle />
+  <span>Watch Trailer</span>
+</Button>
+                <Button size="lg" variant="outline" disabled>
+  <Bookmark />
+  <span>Add to Watchlist</span>
+</Button>
               </div>
             )}
           </div>
         </div>
 
-        <div className="mt-12">
+        {/* Cast Section */}
+        {movie.cast && movie.cast.length > 0 && (
+          <div className="my-12">
+            <h2 className="text-3xl font-bold mb-6 text-foreground">Cast</h2>
+            <div className="flex gap-6 overflow-x-auto pb-2">
+              {movie.cast.map((member, idx) => (
+                <div key={member.name + idx} className="flex flex-col items-center min-w-[100px]">
+                  {member.profileUrl ? (
+  <a
+    href={member.imdbUrl || member.tmdbUrl}
+    target="_blank"
+    rel="noopener noreferrer"
+    className="hover:scale-105 transition-transform"
+  >
+    <img
+      src={member.profileUrl}
+      alt={member.name}
+      className="w-20 h-20 rounded-full object-cover shadow-md mb-2 border-2 border-transparent hover:border-primary"
+    />
+  </a>
+) : (
+  <a
+    href={member.imdbUrl || member.tmdbUrl}
+    target="_blank"
+    rel="noopener noreferrer"
+    className="hover:scale-105 transition-transform"
+  >
+    <div className="w-20 h-20 rounded-full bg-muted flex items-center justify-center mb-2 text-muted-foreground text-xl border-2 border-transparent hover:border-primary">
+      ?
+    </div>
+  </a>
+)}
+<a
+  href={member.imdbUrl || member.tmdbUrl}
+  target="_blank"
+  rel="noopener noreferrer"
+  className="font-semibold text-sm text-center line-clamp-2 hover:underline"
+>
+  {member.name}
+</a>
+                  <div className="text-xs text-muted-foreground text-center line-clamp-2">{member.character}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        <div className="my-12">
           <h2 className="text-3xl font-bold mb-6 text-foreground">Gallery</h2>
-                    <ImageCarousel images={movie.images.backdrops} />
+          <ImageCarousel images={movie.images.backdrops} />
         </div>
       </div>
 

@@ -118,6 +118,39 @@ app.get('/api/movie/:id', async (req: Request, res: Response) => {
 
     const movieData = response.data;
 
+    // Fetch cast information from TMDB credits endpoint
+    const creditsUrl = `https://api.themoviedb.org/3/movie/${id}/credits`;
+    const creditsResponse = await axios.get(creditsUrl, {
+      params: { api_key: tmdbApiKey }
+    });
+    // For each cast member, fetch their external_ids to get imdb_id
+    const castRaw = creditsResponse.data.cast.slice(0, 8);
+    const castData = await Promise.all(
+      castRaw.map(async (member: any) => {
+        let imdbUrl = null;
+        try {
+          const personResp = await axios.get(`https://api.themoviedb.org/3/person/${member.id}/external_ids`, {
+            params: { api_key: tmdbApiKey }
+          });
+          if (personResp.data.imdb_id) {
+            imdbUrl = `https://www.imdb.com/name/${personResp.data.imdb_id}`;
+          }
+        } catch (e) {
+          // ignore error, fallback to TMDB link only
+        }
+        return {
+          id: member.id,
+          name: member.name,
+          character: member.character,
+          profileUrl: member.profile_path
+            ? `https://image.tmdb.org/t/p/w185${member.profile_path}`
+            : null,
+          imdbUrl,
+          tmdbUrl: `https://www.themoviedb.org/person/${member.id}`
+        };
+      })
+    );
+
     const result = {
       id: movieData.id,
       title: movieData.title,
@@ -133,7 +166,8 @@ app.get('/api/movie/:id', async (req: Request, res: Response) => {
       },
       trailerUrl: movieData.videos.results.find((v: any) => v.site === 'YouTube' && v.type === 'Trailer')?.key
         ? `https://www.youtube.com/embed/${movieData.videos.results.find((v: any) => v.site === 'YouTube' && v.type === 'Trailer').key}`
-        : ''
+        : '',
+      cast: castData
     };
 
     res.json(result);

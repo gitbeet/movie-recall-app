@@ -1,6 +1,7 @@
 import { Link, Outlet } from 'react-router-dom';
 import { ModeToggle } from './ui/mode-toggle';
-import { Film } from 'lucide-react';
+import { Film, LogIn } from 'lucide-react';
+import { Button } from './ui/button';
 
 const Layout = () => {
   return (
@@ -12,7 +13,10 @@ const Layout = () => {
                 <Film className="h-6 w-6 text-primary" />
                 <span>flickfinder.<b className="text-primary">ai</b></span>
               </Link>
-            <ModeToggle />
+              <div>
+            <ModeToggle /> <Button disabled className="ml-2">
+                <LogIn  /> Sign In
+              </Button> </div>
           </div>
         </div>
       </nav>
