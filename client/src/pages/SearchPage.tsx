@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import MovieCard from "@/components/MovieCard";
 import { AutoResizeTextArea } from "@/components/ui/AutoResizeTextarea";
-import { Loader2, Search } from "lucide-react";
+import { Loader2, Search, X } from "lucide-react";
 import { useSearch } from "@/context/SearchContext";
 
 const SearchPage = () => {
@@ -113,15 +113,16 @@ const SearchPage = () => {
               <>
                 <div className="flex justify-end mb-4">
                   <Button variant="outline" size="sm" onClick={clearResults}>
+                    <X />
                     Clear Results
                   </Button>
                 </div>
                 {/* Top 3 results */}
                 <div className="mb-8">
-                  <div className="text-lg font-semibold text-primary mb-2">
+                  {/* <h2 className="text-2xl text-center font-semibold text-primary mb-8">
                     You were probably looking for one of these
-                  </div>
-                  <div className="flex flex-col sm:flex-row gap-4 items-stretch">
+                  </h2> */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 ">
                     {movieResults.slice(0, 3).map((movie, idx) => (
                       <div
                         key={movie.id}

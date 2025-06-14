@@ -57,17 +57,19 @@ const MovieCard: React.FC<MovieCardProps> = ({
         onClick={() => navigate(`/movie/${id}`)}
       >
         <CardHeader className="p-0 flex-shrink-0">
-          {posterUrl ? (
-            <img
-              src={posterUrl}
-              alt={title}
-              className="w-full aspect-[2/3] object-cover group-hover/card:scale-105 transition-all duration-300"
-            />
-          ) : (
-            <div className="w-full aspect-[2/3] flex items-center justify-center bg-muted text-muted-foreground text-center text-xs sm:text-sm font-semibold rounded-md">
-              No poster available
-            </div>
-          )}
+          <div className="aspect-[2/3] overflow-hidden">
+            {posterUrl ? (
+              <img
+                src={posterUrl}
+                alt={title}
+                className="w-full  object-cover group-hover/card:scale-105 transition-all duration-300"
+              />
+            ) : (
+              <div className="w-full h-full  flex items-center justify-center bg-muted text-muted-foreground text-center text-xs sm:text-sm font-semibold rounded-md">
+                No poster available
+              </div>
+            )}
+          </div>
         </CardHeader>
         <CardContent className="flex flex-col flex-1 p-2">
           <CardTitle className="text-base font-semibold line-clamp-2 mb-1 line-clamp-1">
