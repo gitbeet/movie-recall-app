@@ -4,7 +4,7 @@ import { useSearch } from "@/context/SearchContext";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import ImageCarousel from "@/components/ui/ImageCarousel";
-import { PlayCircle, Bookmark, ArrowLeft } from "lucide-react";
+import { PlayCircle, Bookmark, ArrowLeft, ExternalLink } from "lucide-react";
 import TrailerModal from "@/components/modals/TrailerModal";
 import MovieCarousel from "@/components/ui/MovieCarousel";
 import CastCarousel from "@/components/ui/CastCarousel";
@@ -16,6 +16,13 @@ interface CastMember {
   profileUrl: string | null;
   imdbUrl?: string | null;
   tmdbUrl?: string;
+}
+
+interface CrewMember {
+  id: number;
+  name: string;
+  job: string;
+  imdbUrl?: string | null;
 }
 
 interface MovieDetails {
@@ -33,6 +40,7 @@ interface MovieDetails {
   };
   trailerUrl: string;
   cast?: CastMember[];
+  crew?: CrewMember[];
   imdbUrl?: string | null;
 }
 
@@ -44,7 +52,7 @@ const MovieDetailsPage = () => {
 
   // Scroll to top when navigating to a different movie
   useEffect(() => {
-    window.scrollTo({ top: 0, behavior: 'instant' });
+    window.scrollTo({ top: 0, behavior: "instant" });
   }, [id]);
   const [movie, setMovie] = useState<MovieDetails | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -68,6 +76,7 @@ const MovieDetailsPage = () => {
 
   useEffect(() => {
     const fetchMovieDetails = async () => {
+      setMovie(null); // Clear previous movie data to prevent stale crew/cast
       setIsLoading(true);
       setError(null);
       try {
@@ -114,7 +123,7 @@ const MovieDetailsPage = () => {
           }
         } catch (e) {
           // ignore
-          console.log(e)
+          console.log(e);
         }
       }
     };
@@ -146,10 +155,27 @@ const MovieDetailsPage = () => {
                 <div className="h-6 w-16 bg-muted rounded" />
               </div>
               <div className="h-6 w-24 bg-muted rounded" /> {/* Rating */}
-              <div className="h-16 w-full bg-muted rounded" /> {/* Description */}
+              <div className="h-16 w-full bg-muted rounded" />{" "}
+              {/* Description */}
               <div className="flex gap-2 mt-6">
                 <div className="h-10 w-32 bg-muted rounded" />
                 <div className="h-10 w-40 bg-muted rounded" />
+              </div>
+              {/* Crew skeleton */}
+              <div className="mt-6">
+                <div className="h-6 w-32 bg-muted rounded mb-4" />
+                <div className="flex flex-wrap gap-x-4 gap-y-2">
+                  {Array.from({ length: 4 }).map((_, i) => (
+                    <div key={i} className="flex items-center gap-2">
+                      <div className="h-4 w-16 bg-muted rounded" /> {/* Job */}
+                      <div className="h-4 w-20 bg-muted rounded" /> {/* Name */}
+                      {i < 3 && (
+                        <div className="h-3 w-3 bg-muted rounded-full mx-2" />
+                      )}{" "}
+                      {/* Dot */}
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
           </div>
@@ -158,7 +184,10 @@ const MovieDetailsPage = () => {
             <div className="h-8 w-40 bg-muted rounded mb-6" />
             <div className="flex gap-6 overflow-x-auto pb-2">
               {Array.from({ length: 6 }).map((_, i) => (
-                <div key={i} className="flex flex-col items-center min-w-[100px]">
+                <div
+                  key={i}
+                  className="flex flex-col items-center min-w-[100px]"
+                >
                   <div className="w-20 h-20 rounded-full bg-muted mb-2" />
                   <div className="h-4 w-16 bg-muted rounded mb-1" />
                   <div className="h-3 w-20 bg-muted rounded" />
@@ -197,16 +226,16 @@ const MovieDetailsPage = () => {
         className="w-full h-[40dvh] bg-cover bg-center bg-no-repeat relative"
         style={{ backgroundImage: `url(${movie.backdropUrl})` }}
       >
-        <div className="absolute inset-0 bg-black/60 backdrop-blur-sm"></div>
+        <div className="absolute inset-0 bg-white/40 dark:bg-black/60 backdrop-blur-sm"></div>
       </div>
 
       <div className="max-w-6xl mx-auto p-4 sm:p-6 lg:p-8 -mt-56 relative z-10 space-y-16">
         {/* Back to Homepage Button */}
         <Button
-          variant="outline"
+          variant="secondary"
           size="lg"
           className="mb-4 font-semibold flex items-center gap-2 shadow hover:shadow-lg"
-          onClick={() => navigate('/')}
+          onClick={() => navigate("/")}
         >
           <ArrowLeft className="w-5 h-5" /> Back to Homepage
         </Button>
@@ -219,23 +248,48 @@ const MovieDetailsPage = () => {
             />
           </div>
           <div className="md:w-2/3 mt-6 md:mt-0 bg-card text-card-foreground p-8 rounded-lg shadow-xl">
-            <h1 className="text-3xl md:text-4xl font-bold flex items-start gap-5">
-              {movie.title}
+            <div className="flex justify-between items-center gap-5">
+              <h1 className="text-3xl md:text-4xl font-bold">{movie.title}</h1>
               {movie.imdbUrl && (
                 <a
                   href={movie.imdbUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center px-2 py-1 text-xs font-semibold bg-yellow-400 text-black rounded hover:bg-yellow-500 transition-colors"
+                  className="inline-flex items-center px-2 py-1 text-xs font-semibold bg-yellow-400 text-black rounded hover:bg-yellow-500 transition-colors gap-1"
                   title="View on IMDb"
                 >
-                  IMDb
+                  <ExternalLink className="w-4 h-4 mr-1" /> IMDb
                 </a>
               )}
-            </h1>
+            </div>
             <div className="text-muted-foreground text-base md:text-lg mt-3 font-normal">
               {movie.releaseYear}
             </div>
+            {movie.crew && movie.crew.length > 0 && (
+              <div className="text-muted-foreground text-sm mb-3 flex flex-wrap gap-x-4 gap-y-1 mt-2">
+                {movie.crew!.map((member, idx) => (
+                  <span key={member.id} className="flex items-center">
+                    <span className="font-medium">{member.job}:</span>&nbsp;
+                    {member.imdbUrl ? (
+                      <a
+                        href={member.imdbUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="underline hover:text-primary transition-colors"
+                        title={`View ${member.name} on IMDb`}
+                      >
+                        {member.name}
+                      </a>
+                    ) : (
+                      member.name
+                    )}
+                    {idx < movie.crew!.length - 1 && (
+                      <span className="mx-2">&middot;</span>
+                    )}
+                  </span>
+                ))}
+              </div>
+            )}
             <div className="flex flex-wrap gap-2 my-4">
               {movie.genres.map((genre) => (
                 <Badge key={genre} variant="secondary">
@@ -286,16 +340,15 @@ const MovieDetailsPage = () => {
               Similar Movies
             </h2>
             <MovieCarousel
-  movies={similarMovies}
-  onMovieClick={(movie) => {
-    navigate(`/movie/${movie.id}`);
-    window.scrollTo({ top: 0, behavior: 'instant' });
-  }}
-/>
+              movies={similarMovies}
+              onMovieClick={(movie) => {
+                navigate(`/movie/${movie.id}`);
+                window.scrollTo({ top: 0, behavior: "instant" });
+              }}
+            />
           </div>
         )}
       </div>
-
 
       {isTrailerOpen && movie.trailerUrl && (
         <TrailerModal

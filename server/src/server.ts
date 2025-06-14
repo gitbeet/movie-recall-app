@@ -152,6 +152,36 @@ app.get('/api/movie/:id', async (req: Request, res: Response) => {
       })
     );
 
+    // Extract director, producer, writer from crew
+    const crewRaw = creditsResponse.data.crew;
+    // Only pick the first unique person for each job
+    const jobsToExtract = ["Director", "Producer", "Writer"];
+    const crewData = await Promise.all(
+      jobsToExtract.map(async (job) => {
+        const person = crewRaw.find((member: any) => member.job === job);
+        if (!person) return null;
+        let imdbUrl = null;
+        try {
+          const personResp = await axios.get(
+            `https://api.themoviedb.org/3/person/${person.id}/external_ids`,
+            { params: { api_key: tmdbApiKey } }
+          );
+          if (personResp.data.imdb_id) {
+            imdbUrl = `https://www.imdb.com/name/${personResp.data.imdb_id}`;
+          }
+        } catch (e) {
+          console.log(e);
+        }
+        return {
+          id: person.id,
+          name: person.name,
+          job: person.job,
+          imdbUrl,
+        };
+      })
+    );
+    const filteredCrewData = crewData.filter(Boolean);
+
     const result = {
       id: movieData.id,
       title: movieData.title,
@@ -169,6 +199,7 @@ app.get('/api/movie/:id', async (req: Request, res: Response) => {
         ? `https://www.youtube.com/embed/${movieData.videos.results.find((v: any) => v.site === 'YouTube' && v.type === 'Trailer').key}`
         : '',
       cast: castData,
+      crew: filteredCrewData,
       imdbId: movieData.imdb_id,
       imdbUrl: movieData.imdb_id ? `https://www.imdb.com/title/${movieData.imdb_id}` : null
     };
