@@ -167,7 +167,9 @@ app.get('/api/movie/:id', async (req: Request, res: Response) => {
       trailerUrl: movieData.videos.results.find((v: any) => v.site === 'YouTube' && v.type === 'Trailer')?.key
         ? `https://www.youtube.com/embed/${movieData.videos.results.find((v: any) => v.site === 'YouTube' && v.type === 'Trailer').key}`
         : '',
-      cast: castData
+      cast: castData,
+      imdbId: movieData.imdb_id,
+      imdbUrl: movieData.imdb_id ? `https://www.imdb.com/title/${movieData.imdb_id}` : null
     };
 
     res.json(result);

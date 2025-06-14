@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import ImageCarousel from '@/components/ui/ImageCarousel';
@@ -30,6 +30,7 @@ interface MovieDetails {
   };
   trailerUrl: string;
   cast?: CastMember[];
+  imdbUrl?: string | null;
 }
 
 const MovieDetailsPage = () => {
@@ -81,7 +82,20 @@ const MovieDetailsPage = () => {
             <img src={movie.posterUrl} alt={movie.title} className="w-full rounded-lg shadow-2xl" />
           </div>
           <div className="md:w-2/3 mt-6 md:mt-0 bg-card text-card-foreground p-8 rounded-lg shadow-xl">
-            <h1 className="text-3xl md:text-4xl font-bold">{movie.title} ({movie.releaseYear})</h1>
+            <h1 className="text-3xl md:text-4xl font-bold flex items-center gap-3">
+  {movie.title} ({movie.releaseYear})
+  {movie.imdbUrl && (
+    <a
+      href={movie.imdbUrl}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="inline-flex items-center px-2 py-1 text-xs font-semibold bg-yellow-400 text-black rounded hover:bg-yellow-500 transition-colors"
+      title="View on IMDb"
+    >
+      IMDb
+    </a>
+  )}
+</h1>
             <div className="flex flex-wrap gap-2 my-4">
               {movie.genres.map(genre => <Badge key={genre} variant="secondary">{genre}</Badge>)}
             </div>
