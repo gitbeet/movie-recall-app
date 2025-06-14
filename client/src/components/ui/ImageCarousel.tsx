@@ -8,7 +8,7 @@ interface ImageCarouselProps {
 }
 
 const ImageCarousel: React.FC<ImageCarouselProps> = ({ images }) => {
-  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true }, []);
+  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: false }, []);
   const [selectedImageIndex, setSelectedImageIndex] = useState<number | null>(null);
 
   const scrollPrev = useCallback(() => {
