@@ -8,6 +8,7 @@ import { PlayCircle, Bookmark, ArrowLeft, ExternalLink } from "lucide-react";
 import TrailerModal from "@/components/modals/TrailerModal";
 import MovieCarousel from "@/components/ui/MovieCarousel";
 import CastCarousel from "@/components/ui/CastCarousel";
+import { useFavorites } from "@/context/FavoritesContext";
 
 interface CastMember {
   id: number;
@@ -58,6 +59,11 @@ const MovieDetailsPage = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isTrailerOpen, setIsTrailerOpen] = useState(false);
+
+  // Favorites context
+  const { userId, addFavorite, removeFavorite, isFavorite, loading } =
+    useFavorites();
+  const isCurrentFavorite = movie ? isFavorite(movie.id) : false;
 
   // Use context results (excluding current movie), fallback to TMDB similar
   // MovieResult (from context) and MovieDetails (from fallback) are structurally compatible for MovieCard
@@ -312,9 +318,33 @@ const MovieDetailsPage = () => {
                   <PlayCircle />
                   <span>Watch Trailer</span>
                 </Button>
-                <Button size="lg" variant="outline" disabled>
-                  <Bookmark />
-                  <span>Add to Watchlist</span>
+                <Button
+                  size="lg"
+                  variant={"outline"}
+                  disabled={!userId || loading}
+                  onClick={async () => {
+                    if (!userId) return;
+                    if (isCurrentFavorite) {
+                      await removeFavorite(movie.id);
+                    } else {
+                      await addFavorite({
+                        id: movie.id,
+                        title: movie.title,
+                        posterUrl: movie.posterUrl,
+                        description: movie.description,
+                        releaseYear: movie.releaseYear,
+                      });
+                    }
+                  }}
+                >
+                  <Bookmark
+                    fill={isCurrentFavorite ? "currentColor" : "none"}
+                  />
+                  <span>
+                    {isCurrentFavorite
+                      ? "Remove from Watchlist"
+                      : "Add to Watchlist"}
+                  </span>
                 </Button>
               </div>
             )}

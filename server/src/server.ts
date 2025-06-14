@@ -11,6 +11,56 @@ const port = process.env.PORT || 3001;
 app.use(cors());
 app.use(express.json()); // Middleware to parse JSON bodies
 
+// --- In-memory user & favorites store (for demo purposes) ---
+const users: { [email: string]: { userId: string; email: string } } = {};
+const userFavorites: { [userId: string]: any[] } = {};
+
+function getOrCreateUser(email: string) {
+  if (!users[email]) {
+    const userId = Math.random().toString(36).slice(2) + Date.now();
+    users[email] = { userId, email };
+    userFavorites[userId] = [];
+  }
+  return users[email];
+}
+
+// --- User and Favorites Endpoints ---
+// Create or fetch a user by email
+app.post("/api/user", (req, res) => {
+  const { email } = req.body;
+  if (!email) return res.status(400).json({ error: "Email is required" });
+  const user = getOrCreateUser(email);
+  res.json({ userId: user.userId, email: user.email });
+});
+
+// Get favorites for a user
+app.get("/api/user/:userId/favorites", (req, res) => {
+  const { userId } = req.params;
+  const favorites = userFavorites[userId] || [];
+  res.json({ favorites });
+});
+
+// Add a favorite movie
+app.post("/api/user/:userId/favorites", (req, res) => {
+  const { userId } = req.params;
+  const movie = req.body;
+  if (!movie || !movie.id) return res.status(400).json({ error: "Movie object with id required" });
+  if (!userFavorites[userId]) userFavorites[userId] = [];
+  // Avoid duplicates
+  if (!userFavorites[userId].some((m) => m.id === movie.id)) {
+    userFavorites[userId].push(movie);
+  }
+  res.json({ favorites: userFavorites[userId] });
+});
+
+// Remove a favorite movie
+app.delete("/api/user/:userId/favorites/:movieId", (req, res) => {
+  const { userId, movieId } = req.params;
+  if (!userFavorites[userId]) return res.json({ favorites: [] });
+  userFavorites[userId] = userFavorites[userId].filter((m) => String(m.id) !== String(movieId));
+  res.json({ favorites: userFavorites[userId] });
+});
+
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 const TMDB_API_KEY = process.env.TMDB_API_KEY;
 
