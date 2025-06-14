@@ -136,6 +136,7 @@ app.get('/api/movie/:id', async (req: Request, res: Response) => {
             imdbUrl = `https://www.imdb.com/name/${personResp.data.imdb_id}`;
           }
         } catch (e) {
+          console.log(e)
           // ignore error, fallback to TMDB link only
         }
         return {

@@ -1,10 +1,12 @@
-import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import ImageCarousel from '@/components/ui/ImageCarousel';
-import { PlayCircle, Bookmark } from 'lucide-react';
-import TrailerModal from '@/components/modals/TrailerModal';
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import { useSearch } from "@/context/SearchContext";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import ImageCarousel from "@/components/ui/ImageCarousel";
+import { PlayCircle, Bookmark } from "lucide-react";
+import TrailerModal from "@/components/modals/TrailerModal";
+import MovieCarousel from "@/components/ui/MovieCarousel";
 
 interface CastMember {
   id: number;
@@ -34,20 +36,39 @@ interface MovieDetails {
 }
 
 const MovieDetailsPage = () => {
+  const { movieResults } = useSearch();
+  const [fallbackSimilar, setFallbackSimilar] = useState<MovieDetails[]>([]);
   const { id } = useParams<{ id: string }>();
   const [movie, setMovie] = useState<MovieDetails | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isTrailerOpen, setIsTrailerOpen] = useState(false);
 
+  // Use context results (excluding current movie), fallback to TMDB similar
+  // MovieResult (from context) and MovieDetails (from fallback) are structurally compatible for MovieCard
+  type MovieSummary = {
+    id: number;
+    title: string;
+    description: string;
+    posterUrl: string;
+    releaseYear?: string;
+    rating?: number;
+  };
+  const similarMovies: MovieSummary[] =
+    movieResults && movieResults.length > 0
+      ? movieResults.filter((m) => m.id !== Number(id))
+      : fallbackSimilar;
+
   useEffect(() => {
     const fetchMovieDetails = async () => {
       setIsLoading(true);
       setError(null);
       try {
-        const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/movie/${id}`);
+        const response = await fetch(
+          `${import.meta.env.VITE_API_BASE_URL}/api/movie/${id}`
+        );
         if (!response.ok) {
-          throw new Error('Failed to fetch movie details.');
+          throw new Error("Failed to fetch movie details.");
         }
         const data = await response.json();
         setMovie(data);
@@ -58,13 +79,49 @@ const MovieDetailsPage = () => {
       }
     };
 
+    // Fallback: fetch similar movies from TMDB if context is empty
+    const fetchSimilarMovies = async () => {
+      if ((!movieResults || movieResults.length === 0) && id) {
+        try {
+          const resp = await fetch(
+            `https://api.themoviedb.org/3/movie/${id}/similar?api_key=${
+              import.meta.env.VITE_TMDB_API_KEY
+            }`
+          );
+          if (resp.ok) {
+            const data = await resp.json();
+            setFallbackSimilar(
+              data.results.map((m: any) => ({
+                id: m.id,
+                title: m.title,
+                description: m.overview,
+                posterUrl: m.poster_path
+                  ? `https://image.tmdb.org/t/p/w500${m.poster_path}`
+                  : "",
+                releaseYear: m.release_date
+                  ? m.release_date.split("-")[0]
+                  : "N/A",
+                rating: m.vote_average,
+              }))
+            );
+          }
+        } catch (e) {
+          // ignore
+          console.log(e)
+        }
+      }
+    };
+
     if (id) {
       fetchMovieDetails();
+      fetchSimilarMovies();
     }
   }, [id]);
 
-  if (isLoading) return <p className="text-center mt-12">Loading movie details...</p>;
-  if (error) return <p className="text-center text-destructive mt-12">Error: {error}</p>;
+  if (isLoading)
+    return <p className="text-center mt-12">Loading movie details...</p>;
+  if (error)
+    return <p className="text-center text-destructive mt-12">Error: {error}</p>;
   if (!movie) return <p className="text-center mt-12">Movie not found.</p>;
 
   return (
@@ -76,46 +133,56 @@ const MovieDetailsPage = () => {
         <div className="absolute inset-0 bg-black/60 backdrop-blur-sm"></div>
       </div>
 
-      <div className="max-w-6xl mx-auto p-4 sm:p-6 lg:p-8 -mt-40 md:-mt-64 relative z-10">
+      <div className="max-w-6xl mx-auto p-4 sm:p-6 lg:p-8 -mt-40 md:-mt-64 relative z-10 space-y-16">
         <div className="md:flex md:space-x-8 items-start">
           <div className="md:w-1/3 flex-shrink-0">
-            <img src={movie.posterUrl} alt={movie.title} className="w-full rounded-lg shadow-2xl" />
+            <img
+              src={movie.posterUrl}
+              alt={movie.title}
+              className="w-full rounded-lg shadow-2xl"
+            />
           </div>
           <div className="md:w-2/3 mt-6 md:mt-0 bg-card text-card-foreground p-8 rounded-lg shadow-xl">
             <h1 className="text-3xl md:text-4xl font-bold flex items-center gap-3">
-  {movie.title} ({movie.releaseYear})
-  {movie.imdbUrl && (
-    <a
-      href={movie.imdbUrl}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="inline-flex items-center px-2 py-1 text-xs font-semibold bg-yellow-400 text-black rounded hover:bg-yellow-500 transition-colors"
-      title="View on IMDb"
-    >
-      IMDb
-    </a>
-  )}
-</h1>
+              {movie.title} ({movie.releaseYear})
+              {movie.imdbUrl && (
+                <a
+                  href={movie.imdbUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center px-2 py-1 text-xs font-semibold bg-yellow-400 text-black rounded hover:bg-yellow-500 transition-colors"
+                  title="View on IMDb"
+                >
+                  IMDb
+                </a>
+              )}
+            </h1>
             <div className="flex flex-wrap gap-2 my-4">
-              {movie.genres.map(genre => <Badge key={genre} variant="secondary">{genre}</Badge>)}
+              {movie.genres.map((genre) => (
+                <Badge key={genre} variant="secondary">
+                  {genre}
+                </Badge>
+              ))}
             </div>
             <div className="flex items-center gap-4 my-4">
-              <span className="text-xl font-bold text-primary">★ {movie.rating.toFixed(1)}</span>
+              <span className="text-xl font-bold text-primary">
+                ★ {movie.rating.toFixed(1)}
+              </span>
             </div>
-            <p className="text-base leading-relaxed text-muted-foreground">{movie.description}</p>
+            <p className="text-base leading-relaxed text-muted-foreground">
+              {movie.description}
+            </p>
 
             {movie.trailerUrl && (
               <div className="mt-6 flex items-center gap-1.5">
-                <Button size="lg"
-  onClick={() => setIsTrailerOpen(true)}
->
-  <PlayCircle />
-  <span>Watch Trailer</span>
-</Button>
+                <Button size="lg" onClick={() => setIsTrailerOpen(true)}>
+                  <PlayCircle />
+                  <span>Watch Trailer</span>
+                </Button>
                 <Button size="lg" variant="outline" disabled>
-  <Bookmark />
-  <span>Add to Watchlist</span>
-</Button>
+                  <Bookmark />
+                  <span>Add to Watchlist</span>
+                </Button>
               </div>
             )}
           </div>
@@ -123,59 +190,74 @@ const MovieDetailsPage = () => {
 
         {/* Cast Section */}
         {movie.cast && movie.cast.length > 0 && (
-          <div className="my-12">
+          <div>
             <h2 className="text-3xl font-bold mb-6 text-foreground">Cast</h2>
             <div className="flex gap-6 overflow-x-auto pb-2">
               {movie.cast.map((member, idx) => (
-                <div key={member.name + idx} className="flex flex-col items-center min-w-[100px]">
+                <div
+                  key={member.name + idx}
+                  className="flex flex-col items-center min-w-[100px]"
+                >
                   {member.profileUrl ? (
-  <a
-    href={member.imdbUrl || member.tmdbUrl}
-    target="_blank"
-    rel="noopener noreferrer"
-    className="hover:scale-105 transition-transform"
-  >
-    <img
-      src={member.profileUrl}
-      alt={member.name}
-      className="w-20 h-20 rounded-full object-cover shadow-md mb-2 border-2 border-transparent hover:border-primary"
-    />
-  </a>
-) : (
-  <a
-    href={member.imdbUrl || member.tmdbUrl}
-    target="_blank"
-    rel="noopener noreferrer"
-    className="hover:scale-105 transition-transform"
-  >
-    <div className="w-20 h-20 rounded-full bg-muted flex items-center justify-center mb-2 text-muted-foreground text-xl border-2 border-transparent hover:border-primary">
-      ?
-    </div>
-  </a>
-)}
-<a
-  href={member.imdbUrl || member.tmdbUrl}
-  target="_blank"
-  rel="noopener noreferrer"
-  className="font-semibold text-sm text-center line-clamp-2 hover:underline"
->
-  {member.name}
-</a>
-                  <div className="text-xs text-muted-foreground text-center line-clamp-2">{member.character}</div>
+                    <a
+                      href={member.imdbUrl || member.tmdbUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="hover:scale-105 transition-transform"
+                    >
+                      <img
+                        src={member.profileUrl}
+                        alt={member.name}
+                        className="w-20 h-20 rounded-full object-cover shadow-md mb-2 border-2 border-transparent hover:border-primary"
+                      />
+                    </a>
+                  ) : (
+                    <a
+                      href={member.imdbUrl || member.tmdbUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="hover:scale-105 transition-transform"
+                    >
+                      <div className="w-20 h-20 rounded-full bg-muted flex items-center justify-center mb-2 text-muted-foreground text-xl border-2 border-transparent hover:border-primary">
+                        ?
+                      </div>
+                    </a>
+                  )}
+                  <a
+                    href={member.imdbUrl || member.tmdbUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="font-semibold text-sm text-center line-clamp-2 hover:underline"
+                  >
+                    {member.name}
+                  </a>
+                  <div className="text-xs text-muted-foreground text-center line-clamp-2">
+                    {member.character}
+                  </div>
                 </div>
               ))}
             </div>
           </div>
         )}
 
-        <div className="my-12">
+        <div>
           <h2 className="text-3xl font-bold mb-6 text-foreground">Gallery</h2>
           <ImageCarousel images={movie.images.backdrops} />
         </div>
+        {/* Similar Movies Section */}
+        {similarMovies.length > 0 && (
+          <div className="max-w-6xl mx-auto">
+            <h2 className="text-3xl font-bold mb-6 text-foreground">
+              Similar Movies
+            </h2>
+            <MovieCarousel movies={similarMovies} />
+          </div>
+        )}
       </div>
 
+
       {isTrailerOpen && movie.trailerUrl && (
-        <TrailerModal 
+        <TrailerModal
           trailerUrl={movie.trailerUrl}
           onClose={() => setIsTrailerOpen(false)}
         />
