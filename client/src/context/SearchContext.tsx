@@ -50,7 +50,7 @@ export const SearchProvider = ({ children }: { children: ReactNode }) => {
     // We don't clear results here, so they persist on failed searches
 
     try {
-      const apiUrl = `${import.meta.env.VITE_API_BASE_URL}/api/find-movie`;
+      const apiUrl = `${import.meta.env.VITE_API_BASE_URL}/api/movie/find`;
       const response = await fetch(apiUrl, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -79,7 +79,16 @@ export const SearchProvider = ({ children }: { children: ReactNode }) => {
 
   return (
     <SearchContext.Provider
-      value={{ input, setInput, movieResults, isLoading, error, setError, handleSearch, clearResults }}
+      value={{
+        input,
+        setInput,
+        movieResults,
+        isLoading,
+        error,
+        setError,
+        handleSearch,
+        clearResults,
+      }}
     >
       {children}
     </SearchContext.Provider>
