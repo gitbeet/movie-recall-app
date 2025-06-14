@@ -1,4 +1,5 @@
 import { createContext, useState, useContext, type ReactNode } from 'react';
+import { useEffect } from 'react';
 
 interface MovieResult {
   id: number;
@@ -21,9 +22,18 @@ const SearchContext = createContext<SearchContextType | undefined>(undefined);
 
 export const SearchProvider = ({ children }: { children: ReactNode }) => {
   const [input, setInput] = useState('');
-  const [movieResults, setMovieResults] = useState<MovieResult[]>([]);
+  const [movieResults, setMovieResults] = useState<MovieResult[]>(() => {
+    const stored = localStorage.getItem('movieResults');
+    return stored ? JSON.parse(stored) : [];
+  });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // Keep movieResults in sync with localStorage
+  // This effect runs whenever movieResults changes
+  useEffect(() => {
+    localStorage.setItem('movieResults', JSON.stringify(movieResults));
+  }, [movieResults]);
 
   const handleSearch = async (searchInput: string) => {
     if (!searchInput.trim()) return;
