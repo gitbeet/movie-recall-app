@@ -14,9 +14,10 @@ interface MovieSummary {
 
 interface MovieCarouselProps {
   movies: MovieSummary[];
+  onMovieClick?: (movie: MovieSummary) => void;
 }
 
-const MovieCarousel: React.FC<MovieCarouselProps> = ({ movies }) => {
+const MovieCarousel: React.FC<MovieCarouselProps> = ({ movies, onMovieClick }) => {
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true, dragFree: true }, []);
 
   const scrollPrev = useCallback(() => {
@@ -33,8 +34,9 @@ const MovieCarousel: React.FC<MovieCarouselProps> = ({ movies }) => {
         <div className="flex -ml-4">
           {movies.map((movie) => (
             <div
-              className="flex-grow-0 flex-shrink-0 w-56 min-w-[14rem] pl-4"
+              className="flex-grow-0 flex-shrink-0 w-56 min-w-[14rem] pl-4 cursor-pointer"
               key={movie.id}
+              onClick={() => onMovieClick?.(movie)}
             >
               <MovieCard {...movie} />
             </div>

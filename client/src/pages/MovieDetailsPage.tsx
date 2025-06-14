@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { useSearch } from "@/context/SearchContext";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import ImageCarousel from "@/components/ui/ImageCarousel";
-import { PlayCircle, Bookmark } from "lucide-react";
+import { PlayCircle, Bookmark, ArrowLeft } from "lucide-react";
 import TrailerModal from "@/components/modals/TrailerModal";
 import MovieCarousel from "@/components/ui/MovieCarousel";
+import CastCarousel from "@/components/ui/CastCarousel";
 
 interface CastMember {
   id: number;
@@ -36,9 +37,15 @@ interface MovieDetails {
 }
 
 const MovieDetailsPage = () => {
+  const navigate = useNavigate();
   const { movieResults } = useSearch();
   const [fallbackSimilar, setFallbackSimilar] = useState<MovieDetails[]>([]);
   const { id } = useParams<{ id: string }>();
+
+  // Scroll to top when navigating to a different movie
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [id]);
   const [movie, setMovie] = useState<MovieDetails | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -185,13 +192,22 @@ const MovieDetailsPage = () => {
   return (
     <div className="w-full">
       <div
-        className="w-full h-[30vh] md:h-[50vh] bg-cover bg-center bg-no-repeat relative"
+        className="w-full h-[40dvh] bg-cover bg-center bg-no-repeat relative"
         style={{ backgroundImage: `url(${movie.backdropUrl})` }}
       >
         <div className="absolute inset-0 bg-black/60 backdrop-blur-sm"></div>
       </div>
 
-      <div className="max-w-6xl mx-auto p-4 sm:p-6 lg:p-8 -mt-40 md:-mt-64 relative z-10 space-y-16">
+      <div className="max-w-6xl mx-auto p-4 sm:p-6 lg:p-8 -mt-56 relative z-10 space-y-16">
+        {/* Back to Homepage Button */}
+        <Button
+          variant="outline"
+          size="lg"
+          className="mb-4 font-semibold flex items-center gap-2 shadow hover:shadow-lg"
+          onClick={() => navigate('/')}
+        >
+          <ArrowLeft className="w-5 h-5" /> Back to Homepage
+        </Button>
         <div className="md:flex md:space-x-8 items-start">
           <div className="md:w-1/3 flex-shrink-0">
             <img
@@ -248,53 +264,9 @@ const MovieDetailsPage = () => {
 
         {/* Cast Section */}
         {movie.cast && movie.cast.length > 0 && (
-          <div>
+          <div className="my-12">
             <h2 className="text-3xl font-bold mb-6 text-foreground">Cast</h2>
-            <div className="flex gap-6 overflow-x-auto pb-2">
-              {movie.cast.map((member, idx) => (
-                <div
-                  key={member.name + idx}
-                  className="flex flex-col items-center min-w-[100px]"
-                >
-                  {member.profileUrl ? (
-                    <a
-                      href={member.imdbUrl || member.tmdbUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="hover:scale-105 transition-transform"
-                    >
-                      <img
-                        src={member.profileUrl}
-                        alt={member.name}
-                        className="w-20 h-20 rounded-full object-cover shadow-md mb-2 border-2 border-transparent hover:border-primary"
-                      />
-                    </a>
-                  ) : (
-                    <a
-                      href={member.imdbUrl || member.tmdbUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="hover:scale-105 transition-transform"
-                    >
-                      <div className="w-20 h-20 rounded-full bg-muted flex items-center justify-center mb-2 text-muted-foreground text-xl border-2 border-transparent hover:border-primary">
-                        ?
-                      </div>
-                    </a>
-                  )}
-                  <a
-                    href={member.imdbUrl || member.tmdbUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="font-semibold text-sm text-center line-clamp-2 hover:underline"
-                  >
-                    {member.name}
-                  </a>
-                  <div className="text-xs text-muted-foreground text-center line-clamp-2">
-                    {member.character}
-                  </div>
-                </div>
-              ))}
-            </div>
+            <CastCarousel cast={movie.cast} />
           </div>
         )}
 
@@ -308,7 +280,13 @@ const MovieDetailsPage = () => {
             <h2 className="text-3xl font-bold mb-6 text-foreground">
               Similar Movies
             </h2>
-            <MovieCarousel movies={similarMovies} />
+            <MovieCarousel
+  movies={similarMovies}
+  onMovieClick={(movie) => {
+    navigate(`/movie/${movie.id}`);
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  }}
+/>
           </div>
         )}
       </div>
