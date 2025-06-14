@@ -9,10 +9,12 @@ const Layout = () => {
       <nav className="bg-card border-b border-border">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
-            <Link to="/" className="flex items-start gap-1 text-lg">
+            <Link to="/" className="flex items-center gap-1 text-lg">
               <Film className="h-6 w-6 text-primary" />
               <span>
-                <b>flickfinder</b>.<span className="text-primary">ai</span>
+                <b>
+                  Flick<i className="text-primary"> Finder</i>
+                </b>
               </span>
             </Link>
             <div>

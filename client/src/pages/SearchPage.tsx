@@ -83,8 +83,8 @@ const SearchPage = () => {
           {/* Welcome message and tagline */}
           {movieResults.length === 0 && (
             <div className="flex flex-col items-center justify-center my-16">
-              <h1 className="text-4xl sm:text-5xl font-extrabold text-center mb-4 text-primary ">
-                Can't Remember That Movie?
+              <h1 className="text-4xl sm:text-5xl font-extrabold text-center mb-4 ">
+                Can't Remember <i className="text-primary">That Movie</i> ?
               </h1>
               <p className="text-lg sm:text-xl text-muted-foreground text-center mb-8 max-w-xl">
                 Describe any scene, actor, plot detail, or anything you
@@ -137,12 +137,9 @@ const SearchPage = () => {
               aria-label="Movie description"
               autoFocus
             />
-            <Button
-              onClick={onSearchClick}
-              disabled={isLoading}
-              className="aspect-square h-full"
-            >
+            <Button onClick={onSearchClick} disabled={isLoading} size={"lg"}>
               <Search />
+              <span className="hidden sm:inline">Find My Movie</span>
             </Button>
           </div>
 
