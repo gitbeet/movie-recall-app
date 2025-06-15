@@ -1,5 +1,6 @@
 import { Link, Outlet } from "react-router-dom";
 import { ModeToggle } from "./ui/mode-toggle";
+import MobileMenu from "./MobileMenu";
 import { Bookmark, Film, LogIn, LogOut } from "lucide-react";
 import { Button } from "./ui/button";
 
@@ -34,32 +35,40 @@ const Layout = () => {
               </span>
             </Link>
             <div className="flex items-center gap-4">
-              {user ? (
-                <>
-                  <span className="font-medium text-sm mr-2">{user.email}</span>
-                  <Link to="/favorites" className="relative">
-                    <Button variant="ghost" className="relative" size="icon">
-                      <span className="relative inline-block">
-                        <Bookmark />
-                        {favorites.length > 0 && (
-                          <span className="absolute -bottom-2.5 -right-2.5 bg-primary text-white text-[10px] leading-none rounded h-4 w-4  shadow-md flex items-center justify-center">
-                            {favorites.length}
-                          </span>
-                        )}
+              {/* Watchlist button - always visible */}
+              <Link to="/favorites" className="relative">
+                <Button variant="ghost" className="relative" size="icon">
+                  <span className="relative inline-block">
+                    <Bookmark />
+                    {favorites.length > 0 && (
+                      <span className="absolute -bottom-2.5 -right-2.5 bg-primary text-white text-[10px] leading-none rounded h-4 w-4  shadow-md flex items-center justify-center">
+                        {favorites.length}
                       </span>
-                    </Button>
-                  </Link>
-                  <Button variant="outline" onClick={handleSignOut}>
-                    <LogOut />
-                    <span className="sm:inline hidden"> Sign Out</span>
-                  </Button>
-                </>
-              ) : (
-                <Button onClick={() => navigate("/login")}>
-                  <LogIn /> <span className="sm:inline hidden"> Sign In</span>
+                    )}
+                  </span>
                 </Button>
-              )}
-              <ModeToggle />
+              </Link>
+
+              {/* Desktop nav elements (hidden on mobile) */}
+              <div className="hidden md:flex items-center gap-4">
+                {user ? (
+                  <>
+                    <Button variant="outline" onClick={handleSignOut}>
+                      <LogOut />
+                      <span className="sm:inline hidden"> Sign Out</span>
+                    </Button>
+                  </>
+                ) : (
+                  <Button onClick={() => navigate("/login")}>
+                    <LogIn /> <span className="sm:inline hidden"> Sign In</span>
+                  </Button>
+                )}
+                <ModeToggle />
+              </div>
+              {/* Mobile menu button (visible on mobile only) */}
+              <div className="md:hidden">
+                <MobileMenu />
+              </div>
             </div>
           </div>
         </div>

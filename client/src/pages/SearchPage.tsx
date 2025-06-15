@@ -110,11 +110,13 @@ const SearchPage = () => {
                   "A hacker discovers the world is a simulation",
                   "A group of friends goes on a treasure hunt",
                   "An animated movie about emotions inside a girl's head",
-                ].map((example) => (
+                ].map((example, idx) => (
                   <Button
                     key={example}
                     variant="outline"
-                    className="rounded-full px-4 py-2 text-sm hover:bg-accent transition-colors"
+                    className={` ${
+                      idx < 3 ? "" : "hidden sm:inline"
+                    } rounded-full px-4 py-2 text-sm hover:bg-accent transition-colors`}
                     onClick={() => {
                       setInput(example);
                       handleSearch(example);
