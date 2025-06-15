@@ -25,7 +25,10 @@ export function LoginForm({
   const [password, setPassword] = useState("");
   return (
     <div
-      className={cn("flex flex-col gap-6 max-w-3xl w-full", className)}
+      className={cn(
+        "flex flex-col gap-6 max-w-4xl md:w-full px-4 sm:px-6 lg:px-8",
+        className
+      )}
       {...props}
     >
       <Card className="overflow-hidden p-0">
