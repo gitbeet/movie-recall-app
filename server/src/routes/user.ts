@@ -1,5 +1,4 @@
 import { Router } from "express";
-import { getOrCreateUser } from "../controllers/user/getOrCreateUser";
 import { getFavorites } from "../controllers/user/getFavorites";
 import { addToFavorites } from "../controllers/user/addToFavorites";
 import { removeFromFavorites } from "../controllers/user/removeFromFavorites";
@@ -9,8 +8,6 @@ import { me } from "../controllers/user/me";
 import { logoutUser } from "../controllers/user/logoutUser";
 
 const router = Router();
-
-router.post("/create", getOrCreateUser);
 
 router.post("/register", registerUser);
 router.post("/login", loginUser);
