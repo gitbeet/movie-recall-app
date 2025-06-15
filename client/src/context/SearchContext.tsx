@@ -1,5 +1,4 @@
 import { createContext, useState, useContext, type ReactNode } from "react";
-import { useEffect } from "react";
 
 interface MovieResult {
   id: number;
@@ -27,8 +26,6 @@ export const SearchProvider = ({ children }: { children: ReactNode }) => {
   const [movieResults, setMovieResults] = useState<MovieResult[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
-
 
   const clearResults = () => {
     setMovieResults([]);

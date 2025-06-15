@@ -3,7 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { useFavorites } from "@/context/FavoritesContext";
 import { LoginForm } from "@/components/login-form";
 
-const API_BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:3001/api";
+const API_BASE =
+  import.meta.env.VITE_API_BASE_URL || "http://localhost:3001/api";
 
 const LoginPage: React.FC = () => {
   const [loading, setLoading] = useState(false);
@@ -29,7 +30,7 @@ const LoginPage: React.FC = () => {
       }
       await refetchUser();
       navigate("/");
-    } catch (err) {
+    } catch {
       setError("An error occurred. Please try again.");
       setLoading(false);
     }
@@ -37,11 +38,7 @@ const LoginPage: React.FC = () => {
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-background">
-      <LoginForm
-        loading={loading}
-        error={error}
-        onLogin={handleLogin}
-      />
+      <LoginForm loading={loading} error={error} onLogin={handleLogin} />
     </div>
   );
 };

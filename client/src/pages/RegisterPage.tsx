@@ -30,7 +30,7 @@ const RegisterPage: React.FC = () => {
       }
       setSuccess(true);
       setTimeout(() => navigate("/login"), 1200);
-    } catch (err) {
+    } catch {
       setError("An error occurred. Please try again.");
       setLoading(false);
     }
