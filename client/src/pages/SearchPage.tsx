@@ -33,7 +33,10 @@ const SearchPage = () => {
   const [deleting, setDeleting] = React.useState(false);
 
   React.useEffect(() => {
-    if (input.length > 0) return; // Don't animate if user is typing
+    if (input.length > 0 || movieResults.length > 0 || error) {
+      setPlaceholder(examplePrompts[0]);
+      return;
+    } // Don't animate if user is typing
     const prompt = examplePrompts[typingIdx];
     let timeout: NodeJS.Timeout;
     if (!deleting) {
@@ -52,7 +55,7 @@ const SearchPage = () => {
     }
     setPlaceholder(prompt.slice(0, charIdx));
     return () => clearTimeout(timeout);
-  }, [charIdx, deleting, typingIdx, input]);
+  }, [charIdx, deleting, typingIdx, input, movieResults, error]);
 
   const onSearchClick = () => {
     handleSearch(input);
