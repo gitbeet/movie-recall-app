@@ -2,19 +2,22 @@ import { Link, Outlet } from "react-router-dom";
 import { ModeToggle } from "./ui/mode-toggle";
 import { Bookmark, Film, LogIn, LogOut } from "lucide-react";
 import { Button } from "./ui/button";
-import UserAuthModal from "./UserAuthModal";
+
 import { useFavorites } from "@/context/FavoritesContext";
-import React from "react";
 import { useNavigate } from "react-router-dom";
 
 const Layout = () => {
-  const { userId, setUserId, favorites } = useFavorites();
-  const [modalOpen, setModalOpen] = React.useState(false);
+  const { user, favorites, refetchUser } = useFavorites();
   const navigate = useNavigate();
 
-  const handleSignOut = () => {
-    setUserId(""); // Clear userId and favorites (FavoritesProvider handles this)
-    navigate("/"); // Optionally redirect to home
+  const handleSignOut = async () => {
+    // Call logout endpoint (to be implemented), then refetch user
+    await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/user/logout`, {
+      method: "POST",
+      credentials: "include",
+    });
+    await refetchUser();
+    navigate("/");
   };
 
   return (
@@ -31,8 +34,9 @@ const Layout = () => {
               </span>
             </Link>
             <div className="flex items-center gap-4">
-              {userId ? (
+              {user ? (
                 <>
+                  <span className="font-medium text-sm mr-2">{user.email}</span>
                   <Link to="/favorites" className="relative">
                     <Button variant="ghost" className="relative" size="icon">
                       <span className="relative inline-block">
@@ -46,12 +50,13 @@ const Layout = () => {
                     </Button>
                   </Link>
                   <Button variant="outline" onClick={handleSignOut}>
-                    <LogOut /> Sign Out
+                    <LogOut />
+                    <span className="sm:inline hidden"> Sign Out</span>
                   </Button>
                 </>
               ) : (
-                <Button onClick={() => setModalOpen(true)}>
-                  <LogIn /> Sign In
+                <Button onClick={() => navigate("/login")}>
+                  <LogIn /> <span className="sm:inline hidden"> Sign In</span>
                 </Button>
               )}
               <ModeToggle />
@@ -59,7 +64,7 @@ const Layout = () => {
           </div>
         </div>
       </nav>
-      <UserAuthModal open={modalOpen} onClose={() => setModalOpen(false)} />
+
       <main>
         <Outlet />
       </main>

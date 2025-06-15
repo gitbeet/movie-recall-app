@@ -5,10 +5,10 @@ import { Bookmark, ArrowLeft } from "lucide-react";
 import MovieCard from "@/components/MovieCard";
 
 export default function FavoritesPage() {
-  const { favorites, removeFromFavorites, loading, userId } = useFavorites();
+  const { favorites, removeFromFavorites, loading, user } = useFavorites();
   const navigate = useNavigate();
 
-  if (!userId) {
+  if (!user) {
     return (
       <div className="max-w-xl mx-auto mt-16 text-center text-lg">
         Please sign in to view your favorites.

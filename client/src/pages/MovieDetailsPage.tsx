@@ -61,13 +61,8 @@ const MovieDetailsPage = () => {
   const [isTrailerOpen, setIsTrailerOpen] = useState(false);
 
   // Favorites context
-  const {
-    userId,
-    addToFavorites,
-    removeFromFavorites,
-    isInFavorites,
-    loading,
-  } = useFavorites();
+  const { user, addToFavorites, removeFromFavorites, isInFavorites, loading } =
+    useFavorites();
 
   // Use context results (excluding current movie), fallback to TMDB similar
   // MovieResult (from context) and MovieDetails (from fallback) are structurally compatible for MovieCard
@@ -326,9 +321,9 @@ const MovieDetailsPage = () => {
               <Button
                 size="lg"
                 variant={"outline"}
-                disabled={!userId || loading}
+                disabled={!user || loading}
                 onClick={async () => {
-                  if (!userId) return;
+                  if (!user) return;
                   if (isInFavorites(movie.id)) {
                     await removeFromFavorites(movie.id);
                   } else {
@@ -357,22 +352,26 @@ const MovieDetailsPage = () => {
 
         {/* Cast Section */}
         <div className="my-12">
-  <h2 className="text-3xl font-bold mb-6 text-foreground">Cast</h2>
-  {movie.cast && movie.cast.length > 0 ? (
-    <CastCarousel cast={movie.cast} />
-  ) : (
-    <div className="text-muted-foreground text-center italic py-8">No cast information available for this movie.</div>
-  )}
-</div>
+          <h2 className="text-3xl font-bold mb-6 text-foreground">Cast</h2>
+          {movie.cast && movie.cast.length > 0 ? (
+            <CastCarousel cast={movie.cast} />
+          ) : (
+            <div className="text-muted-foreground text-center italic py-8">
+              No cast information available for this movie.
+            </div>
+          )}
+        </div>
 
         <div>
-  <h2 className="text-3xl font-bold mb-6 text-foreground">Gallery</h2>
-  {movie.images.backdrops && movie.images.backdrops.length > 0 ? (
-    <ImageCarousel images={movie.images.backdrops} />
-  ) : (
-    <div className="text-muted-foreground text-center italic py-8">No images available for this movie.</div>
-  )}
-</div>
+          <h2 className="text-3xl font-bold mb-6 text-foreground">Gallery</h2>
+          {movie.images.backdrops && movie.images.backdrops.length > 0 ? (
+            <ImageCarousel images={movie.images.backdrops} />
+          ) : (
+            <div className="text-muted-foreground text-center italic py-8">
+              No images available for this movie.
+            </div>
+          )}
+        </div>
         {/* Similar Movies Section */}
         {similarMovies.length > 0 && (
           <div className="max-w-6xl mx-auto">

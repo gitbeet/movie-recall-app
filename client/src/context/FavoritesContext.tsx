@@ -7,15 +7,20 @@ interface Movie {
   [key: string]: any;
 }
 
+interface User {
+  id: number;
+  email: string;
+}
+
 interface FavoritesContextType {
   favorites: Movie[];
   addToFavorites: (movie: Movie) => Promise<void>;
   removeFromFavorites: (movieId: number) => Promise<void>;
   isInFavorites: (movieId: number) => boolean;
   loading: boolean;
-  userId: string | null;
-  setUserId: (id: string) => void;
+  user: User | null;
   fetchFavorites: () => Promise<void>;
+  refetchUser: () => Promise<void>;
 }
 
 const FavoritesContext = createContext<FavoritesContextType | undefined>(
@@ -26,28 +31,41 @@ export const FavoritesProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const [favorites, setFavorites] = useState<Movie[]>([]);
-  const [userId, setUserIdState] = useState<string | null>(() => {
-    return localStorage.getItem("userId") || null;
-  });
+  const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(false);
 
-  const setUserId = (id: string) => {
-    setUserIdState(id);
-    if (!id) {
-      setFavorites([]); // Clear favorites on logout
-      localStorage.removeItem("userId");
-    } else {
-      localStorage.setItem("userId", id);
+  // Fetch current user from session
+  const refetchUser = async () => {
+    try {
+      const res = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}/api/user/me`,
+        {
+          credentials: "include",
+        }
+      );
+      if (res.ok) {
+        const data = await res.json();
+        setUser(data);
+      } else {
+        setUser(null);
+        setFavorites([]);
+      }
+    } catch {
+      setUser(null);
+      setFavorites([]);
     }
   };
 
   // Fetch favorites from backend
   const fetchFavorites = async () => {
-    if (!userId) return;
+    if (!user) return;
     setLoading(true);
     try {
       const res = await fetch(
-        `${import.meta.env.VITE_API_BASE_URL}/api/user/${userId}/favorites`
+        `${import.meta.env.VITE_API_BASE_URL}/api/user/${user.id}/favorites`,
+        {
+          credentials: "include",
+        }
       );
       const data = await res.json();
       setFavorites(data.favorites || []);
@@ -58,14 +76,15 @@ export const FavoritesProvider: React.FC<{ children: React.ReactNode }> = ({
 
   // Add a movie to favorites
   const addToFavorites = async (movie: Movie) => {
-    if (!userId) return;
+    if (!user) return;
     setLoading(true);
     try {
       await fetch(
-        `${import.meta.env.VITE_API_BASE_URL}/api/user/${userId}/favorites`,
+        `${import.meta.env.VITE_API_BASE_URL}/api/user/${user.id}/favorites`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
+          credentials: "include",
           body: JSON.stringify(movie),
         }
       );
@@ -77,13 +96,16 @@ export const FavoritesProvider: React.FC<{ children: React.ReactNode }> = ({
 
   // Remove a movie from favorites
   const removeFromFavorites = async (movieId: number) => {
-    if (!userId) return;
+    if (!user) return;
     setLoading(true);
     try {
       await fetch(
-        `${import.meta.env.VITE_API_BASE_URL}/api/user/${userId}/favorites/${movieId}`,
+        `${import.meta.env.VITE_API_BASE_URL}/api/user/${
+          user.id
+        }/favorites/${movieId}`,
         {
           method: "DELETE",
+          credentials: "include",
         }
       );
       await fetchFavorites();
@@ -98,9 +120,14 @@ export const FavoritesProvider: React.FC<{ children: React.ReactNode }> = ({
     -1;
 
   useEffect(() => {
-    if (userId) fetchFavorites();
+    refetchUser();
     // eslint-disable-next-line
-  }, [userId]);
+  }, []);
+
+  useEffect(() => {
+    if (user) fetchFavorites();
+    // eslint-disable-next-line
+  }, [user]);
 
   return (
     <FavoritesContext.Provider
@@ -110,9 +137,9 @@ export const FavoritesProvider: React.FC<{ children: React.ReactNode }> = ({
         removeFromFavorites,
         isInFavorites,
         loading,
-        userId,
-        setUserId,
+        user,
         fetchFavorites,
+        refetchUser,
       }}
     >
       {children}
