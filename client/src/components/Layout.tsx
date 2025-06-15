@@ -34,9 +34,9 @@ const Layout = () => {
               <ModeToggle />
               {userId ? (
                 <>
-                  <Link to="/watchlist">
+                  <Link to="/favorites">
                     <Button variant="outline">
-                      <Bookmark /> Watchlist
+                      <Bookmark /> Favorites
                     </Button>
                   </Link>
                   <Button variant="outline" onClick={handleSignOut}>

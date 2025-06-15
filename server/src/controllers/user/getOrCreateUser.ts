@@ -1,23 +1,28 @@
 import { Request, Response } from "express";
+import { drizzleDb } from "../../db";
+import { users } from "../../schema";
+import { eq } from "drizzle-orm";
 
-// --- In-memory user & favorites store (for demo purposes) ---
-const users: { [email: string]: { userId: string; email: string } } = {};
-export const userFavorites: { [userId: string]: any[] } = {};
-
-function getOrCreateUserHelper(email: string) {
-  if (!users[email]) {
-    const userId = Math.random().toString(36).slice(2) + Date.now();
-    users[email] = { userId, email };
-    userFavorites[userId] = [];
-  }
-  return users[email];
-}
-
-// --- User and Favorites Endpoints ---
 // Create or fetch a user by email
-export const getOrCreateUser = (req: Request, res: Response) => {
+export const getOrCreateUser = async (req: Request, res: Response) => {
   const { email } = req.body;
   if (!email) return res.status(400).json({ error: "Email is required" });
-  const user = getOrCreateUserHelper(email);
-  res.json({ userId: user.userId, email: user.email });
+
+  try {
+    // Check if user exists
+    const existing = await drizzleDb.select().from(users).where(eq(users.email, email)).limit(1);
+    if (existing.length > 0) {
+      const user = existing[0];
+      return res.json({ userId: user.id, email: user.email });
+    }
+
+    // Create new user
+    const result = await drizzleDb.insert(users).values({ email }).returning();
+    const newUser = result[0];
+    return res.json({ userId: newUser.id, email: newUser.email });
+  } catch (error) {
+    console.error("Error in getOrCreateUser:", error);
+    return res.status(500).json({ error: "Internal server error" });
+  }
 };
+

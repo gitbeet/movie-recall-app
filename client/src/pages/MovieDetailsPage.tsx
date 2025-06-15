@@ -61,9 +61,13 @@ const MovieDetailsPage = () => {
   const [isTrailerOpen, setIsTrailerOpen] = useState(false);
 
   // Favorites context
-  const { userId, addFavorite, removeFavorite, isFavorite, loading } =
-    useFavorites();
-  const isCurrentFavorite = movie ? isFavorite(movie.id) : false;
+  const {
+    userId,
+    addToFavorites,
+    removeFromFavorites,
+    isInFavorites,
+    loading,
+  } = useFavorites();
 
   // Use context results (excluding current movie), fallback to TMDB similar
   // MovieResult (from context) and MovieDetails (from fallback) are structurally compatible for MovieCard
@@ -274,7 +278,7 @@ const MovieDetailsPage = () => {
             {movie.crew && movie.crew.length > 0 && (
               <div className="text-muted-foreground text-sm mb-3 flex flex-wrap gap-x-4 gap-y-1 mt-2">
                 {movie.crew!.map((member, idx) => (
-                  <span key={member.id} className="flex items-center">
+                  <span key={idx} className="flex items-center">
                     <span className="font-medium">{member.job}:</span>&nbsp;
                     {member.imdbUrl ? (
                       <a
@@ -324,10 +328,10 @@ const MovieDetailsPage = () => {
                   disabled={!userId || loading}
                   onClick={async () => {
                     if (!userId) return;
-                    if (isCurrentFavorite) {
-                      await removeFavorite(movie.id);
+                    if (isInFavorites(movie.id)) {
+                      await removeFromFavorites(movie.id);
                     } else {
-                      await addFavorite({
+                      await addToFavorites({
                         id: movie.id,
                         title: movie.title,
                         posterUrl: movie.posterUrl,
@@ -338,12 +342,12 @@ const MovieDetailsPage = () => {
                   }}
                 >
                   <Bookmark
-                    fill={isCurrentFavorite ? "currentColor" : "none"}
+                    fill={isInFavorites(movie.id) ? "currentColor" : "none"}
                   />
                   <span>
-                    {isCurrentFavorite
-                      ? "Remove from Watchlist"
-                      : "Add to Watchlist"}
+                    {isInFavorites(movie.id)
+                      ? "Remove from Favorites"
+                      : "Add to Favorites"}
                   </span>
                 </Button>
               </div>

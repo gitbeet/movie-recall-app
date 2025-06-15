@@ -1,0 +1,1 @@
+ALTER TABLE "favorites" RENAME COLUMN "overview" TO "description";

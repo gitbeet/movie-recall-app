@@ -4,14 +4,14 @@ import { Button } from "@/components/ui/button";
 import { Bookmark, ArrowLeft } from "lucide-react";
 import MovieCard from "@/components/MovieCard";
 
-export default function WatchlistPage() {
-  const { favorites, removeFavorite, loading, userId } = useFavorites();
+export default function FavoritesPage() {
+  const { favorites, removeFromFavorites, loading, userId } = useFavorites();
   const navigate = useNavigate();
 
   if (!userId) {
     return (
       <div className="max-w-xl mx-auto mt-16 text-center text-lg">
-        Please sign in to view your watchlist.
+        Please sign in to view your favorites.
       </div>
     );
   }
@@ -23,18 +23,18 @@ export default function WatchlistPage() {
         Go back
       </Button>
       <h1 className="text-3xl font-bold mb-6 flex items-center gap-2">
-        <Bookmark className="text-primary" /> My Watchlist{" "}
+        <Bookmark className="text-primary" /> My Favorites{" "}
       </h1>
       {favorites.length === 0 ? (
         <div className="text-muted-foreground text-lg">
-          Your watchlist is empty.
+          Your favorites list is empty.
         </div>
       ) : (
         <div className="grid gap-6 md:grid-cols-3 lg:grid-cols-4">
           {favorites.map((movie) => (
             <div key={movie.id} className="flex flex-col items-stretch">
               <MovieCard
-                id={movie.id}
+                id={movie.movieId}
                 title={movie.title || ""}
                 description={movie.description || ""}
                 posterUrl={movie.posterUrl || ""}
@@ -46,9 +46,12 @@ export default function WatchlistPage() {
                 size="sm"
                 className="mt-2"
                 disabled={loading}
-                onClick={() => removeFavorite(movie.id)}
+                onClick={() => {
+                  removeFromFavorites(movie.movieId);
+                  console.log("Removed favorite:", movie.movieId);
+                }}
               >
-                Remove from Watchlist
+                Remove from Favorites
               </Button>
             </div>
           ))}
