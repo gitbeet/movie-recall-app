@@ -22,11 +22,9 @@ export default function FavoritesPage() {
         <ArrowLeft className="mr-2" />
         Go back
       </Button>
-      <h1 className="text-3xl font-bold mb-6 flex items-center gap-2">
-        <Bookmark className="text-primary" /> My Favorites{" "}
-      </h1>
+      <h1 className="text-3xl font-bold mb-12 text-center">My Favorites</h1>
       {favorites.length === 0 ? (
-        <div className="text-muted-foreground text-lg">
+        <div className="text-muted-foreground text-lg text-center">
           Your favorites list is empty.
         </div>
       ) : (
@@ -51,6 +49,7 @@ export default function FavoritesPage() {
                   console.log("Removed favorite:", movie.movieId);
                 }}
               >
+                <Bookmark fill="currentColor" />
                 Remove from Favorites
               </Button>
             </div>

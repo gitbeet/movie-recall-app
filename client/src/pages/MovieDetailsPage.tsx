@@ -316,57 +316,63 @@ const MovieDetailsPage = () => {
               {movie.description}
             </p>
 
-            {movie.trailerUrl && (
-              <div className="mt-6 flex items-center gap-1.5">
+            <div className="mt-6 flex items-center gap-1.5">
+              {movie.trailerUrl && (
                 <Button size="lg" onClick={() => setIsTrailerOpen(true)}>
                   <PlayCircle />
                   <span>Watch Trailer</span>
                 </Button>
-                <Button
-                  size="lg"
-                  variant={"outline"}
-                  disabled={!userId || loading}
-                  onClick={async () => {
-                    if (!userId) return;
-                    if (isInFavorites(movie.id)) {
-                      await removeFromFavorites(movie.id);
-                    } else {
-                      await addToFavorites({
-                        id: movie.id,
-                        title: movie.title,
-                        posterUrl: movie.posterUrl,
-                        description: movie.description,
-                        releaseYear: movie.releaseYear,
-                      });
-                    }
-                  }}
-                >
-                  <Bookmark
-                    fill={isInFavorites(movie.id) ? "currentColor" : "none"}
-                  />
-                  <span>
-                    {isInFavorites(movie.id)
-                      ? "Remove from Favorites"
-                      : "Add to Favorites"}
-                  </span>
-                </Button>
-              </div>
-            )}
+              )}
+              <Button
+                size="lg"
+                variant={"outline"}
+                disabled={!userId || loading}
+                onClick={async () => {
+                  if (!userId) return;
+                  if (isInFavorites(movie.id)) {
+                    await removeFromFavorites(movie.id);
+                  } else {
+                    await addToFavorites({
+                      id: movie.id,
+                      title: movie.title,
+                      posterUrl: movie.posterUrl,
+                      description: movie.description,
+                      releaseYear: movie.releaseYear,
+                    });
+                  }
+                }}
+              >
+                <Bookmark
+                  fill={isInFavorites(movie.id) ? "currentColor" : "none"}
+                />
+                <span>
+                  {isInFavorites(movie.id)
+                    ? "Remove from Favorites"
+                    : "Add to Favorites"}
+                </span>
+              </Button>
+            </div>
           </div>
         </div>
 
         {/* Cast Section */}
-        {movie.cast && movie.cast.length > 0 && (
-          <div className="my-12">
-            <h2 className="text-3xl font-bold mb-6 text-foreground">Cast</h2>
-            <CastCarousel cast={movie.cast} />
-          </div>
-        )}
+        <div className="my-12">
+  <h2 className="text-3xl font-bold mb-6 text-foreground">Cast</h2>
+  {movie.cast && movie.cast.length > 0 ? (
+    <CastCarousel cast={movie.cast} />
+  ) : (
+    <div className="text-muted-foreground text-center italic py-8">No cast information available for this movie.</div>
+  )}
+</div>
 
         <div>
-          <h2 className="text-3xl font-bold mb-6 text-foreground">Gallery</h2>
-          <ImageCarousel images={movie.images.backdrops} />
-        </div>
+  <h2 className="text-3xl font-bold mb-6 text-foreground">Gallery</h2>
+  {movie.images.backdrops && movie.images.backdrops.length > 0 ? (
+    <ImageCarousel images={movie.images.backdrops} />
+  ) : (
+    <div className="text-muted-foreground text-center italic py-8">No images available for this movie.</div>
+  )}
+</div>
         {/* Similar Movies Section */}
         {similarMovies.length > 0 && (
           <div className="max-w-6xl mx-auto">

@@ -8,7 +8,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 
 const Layout = () => {
-  const { userId, setUserId } = useFavorites();
+  const { userId, setUserId, favorites } = useFavorites();
   const [modalOpen, setModalOpen] = React.useState(false);
   const navigate = useNavigate();
 
@@ -26,17 +26,23 @@ const Layout = () => {
               <Film className="h-6 w-6 text-primary" />
               <span>
                 <b>
-                  Flick<i className="text-primary"> Finder</i>
+                  Flick<i className="text-primary">Finder</i>
                 </b>
               </span>
             </Link>
             <div className="flex items-center gap-4">
-              <ModeToggle />
               {userId ? (
                 <>
-                  <Link to="/favorites">
-                    <Button variant="outline">
-                      <Bookmark /> Favorites
+                  <Link to="/favorites" className="relative">
+                    <Button variant="ghost" className="relative" size="icon">
+                      <span className="relative inline-block">
+                        <Bookmark />
+                        {favorites.length > 0 && (
+                          <span className="absolute -bottom-2.5 -right-2.5 bg-primary text-white text-[10px] leading-none rounded h-4 w-4  shadow-md flex items-center justify-center">
+                            {favorites.length}
+                          </span>
+                        )}
+                      </span>
                     </Button>
                   </Link>
                   <Button variant="outline" onClick={handleSignOut}>
@@ -48,6 +54,7 @@ const Layout = () => {
                   <LogIn /> Sign In
                 </Button>
               )}
+              <ModeToggle />
             </div>
           </div>
         </div>
