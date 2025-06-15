@@ -45,7 +45,7 @@ export function RegisterForm({
               <div className="flex flex-col items-center text-center">
                 <h1 className="text-2xl font-bold">Create your account</h1>
                 <p className="text-muted-foreground text-balance">
-                  Create your Flick Finder
+                  Create your Flick Finder account
                 </p>
               </div>
               <div className="grid gap-3">

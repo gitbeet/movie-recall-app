@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import ImageCarousel from "@/components/ui/ImageCarousel";
 import { PlayCircle, Bookmark, ArrowLeft, ExternalLink } from "lucide-react";
+import { ShareButton } from "@/components/ui/ShareButton";
 import TrailerModal from "@/components/modals/TrailerModal";
 import MovieCarousel from "@/components/ui/MovieCarousel";
 import CastCarousel from "@/components/ui/CastCarousel";
@@ -48,7 +49,7 @@ interface MovieDetails {
 const MovieDetailsPage = () => {
   const navigate = useNavigate();
   const { movieResults } = useSearch();
-  const [fallbackSimilar, setFallbackSimilar] = useState<MovieDetails[]>([]);
+
   const { id } = useParams<{ id: string }>();
 
   // Scroll to top when navigating to a different movie
@@ -77,7 +78,7 @@ const MovieDetailsPage = () => {
   const similarMovies: MovieSummary[] =
     movieResults && movieResults.length > 0
       ? movieResults.filter((m) => m.id !== Number(id))
-      : fallbackSimilar;
+      : [];
 
   useEffect(() => {
     const fetchMovieDetails = async () => {
@@ -100,42 +101,8 @@ const MovieDetailsPage = () => {
       }
     };
 
-    // Fallback: fetch similar movies from TMDB if context is empty
-    const fetchSimilarMovies = async () => {
-      if ((!movieResults || movieResults.length === 0) && id) {
-        try {
-          const resp = await fetch(
-            `https://api.themoviedb.org/3/movie/${id}/similar?api_key=${
-              import.meta.env.VITE_TMDB_API_KEY
-            }`
-          );
-          if (resp.ok) {
-            const data = await resp.json();
-            setFallbackSimilar(
-              data.results.map((m: any) => ({
-                id: m.id,
-                title: m.title,
-                description: m.overview,
-                posterUrl: m.poster_path
-                  ? `https://image.tmdb.org/t/p/w500${m.poster_path}`
-                  : "",
-                releaseYear: m.release_date
-                  ? m.release_date.split("-")[0]
-                  : "N/A",
-                rating: m.vote_average,
-              }))
-            );
-          }
-        } catch (e) {
-          // ignore
-          console.log(e);
-        }
-      }
-    };
-
     if (id) {
       fetchMovieDetails();
-      fetchSimilarMovies();
     }
   }, [id]);
 
@@ -255,17 +222,20 @@ const MovieDetailsPage = () => {
           <div className="md:w-2/3 mt-6 md:mt-0 bg-card text-card-foreground p-8 rounded-lg shadow-xl">
             <div className="flex justify-between items-center gap-5">
               <h1 className="text-3xl md:text-4xl font-bold">{movie.title}</h1>
-              {movie.imdbUrl && (
-                <a
-                  href={movie.imdbUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center px-2 py-1 text-xs font-semibold bg-yellow-400 text-black rounded hover:bg-yellow-500 transition-colors gap-1"
-                  title="View on IMDb"
-                >
-                  <ExternalLink className="w-4 h-4 mr-1" /> IMDb
-                </a>
-              )}
+              <div className="flex items-center gap-2">
+                {movie.imdbUrl && (
+                  <a
+                    href={movie.imdbUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center px-2 py-1 text-xs font-semibold bg-yellow-400 text-black rounded hover:bg-yellow-500 transition-colors gap-1"
+                    title="View on IMDb"
+                  >
+                    <ExternalLink className="w-4 h-4 mr-1" /> IMDb
+                  </a>
+                )}
+                <ShareButton title={movie.title} url={window.location.href} className="ml-1" />
+              </div>
             </div>
             <div className="text-muted-foreground text-base md:text-lg mt-3 font-normal">
               {movie.releaseYear}
