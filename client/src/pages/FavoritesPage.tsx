@@ -20,10 +20,10 @@ export default function FavoritesPage() {
         </div>
       ) : (
         <>
-          <h1 className="text-3xl font-bold mb-12 text-center">My Favorites</h1>
+          <h1 className="text-3xl font-bold mb-12 text-center">My Watchlist</h1>
           {favorites.length === 0 ? (
             <div className="text-muted-foreground text-lg text-center">
-              Your favorites list is empty.
+              Your watchlist is empty.
             </div>
           ) : (
             <div className="grid gap-6 md:grid-cols-3 lg:grid-cols-4">
@@ -48,7 +48,7 @@ export default function FavoritesPage() {
                     }}
                   >
                     <Bookmark fill="currentColor" />
-                    Remove from Favorites
+                    Remove from Watchlist
                   </Button>
                 </div>
               ))}
