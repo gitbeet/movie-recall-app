@@ -10,13 +10,17 @@ export default function FavoritesPage() {
 
   return (
     <div className="max-w-6xl mx-auto p-4 sm:p-6 lg:p-8 relative z-10 space-y-16">
-      <Button variant="secondary" className="mb-6" onClick={() => navigate(-1)}>
+      <Button
+        variant="secondary"
+        className="mb-6"
+        onClick={() => navigate(-1)}
+      >
         <ArrowLeft className="mr-2" />
         Go back
       </Button>
       {!user ? (
         <div className="max-w-xl mx-auto mt-16 text-center text-lg">
-          Please sign in to view your favorites.
+          Please sign in to view your watchlist.
         </div>
       ) : (
         <>
@@ -28,7 +32,10 @@ export default function FavoritesPage() {
           ) : (
             <div className="grid gap-6 md:grid-cols-3 lg:grid-cols-4">
               {favorites.map((movie) => (
-                <div key={movie.id} className="flex flex-col items-stretch">
+                <div
+                  key={movie.id}
+                  className="flex flex-col items-stretch"
+                >
                   <MovieCard
                     id={movie.movieId}
                     title={movie.title || ""}

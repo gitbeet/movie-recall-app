@@ -1,6 +1,6 @@
 import { createContext, useState, useContext, type ReactNode } from "react";
 
-interface MovieResult {
+export interface MovieResult {
   id: number;
   title: string;
   description: string;
@@ -57,9 +57,13 @@ export const SearchProvider = ({ children }: { children: ReactNode }) => {
 
       const results: MovieResult[] = await response.json();
       setMovieResults(results);
-    } catch (err: any) {
+    } catch (err) {
       console.error("Failed to find movie:", err);
-      setError(err.message || "Sorry, I had trouble finding that movie.");
+      setError(
+        err instanceof Error
+          ? err.message
+          : "Sorry, I had trouble finding that movie."
+      );
       setMovieResults([]); // Clear results on error
     } finally {
       setIsLoading(false);

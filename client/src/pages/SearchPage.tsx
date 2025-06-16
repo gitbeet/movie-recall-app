@@ -1,10 +1,19 @@
-import React from "react";
+import { type KeyboardEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import MovieCard from "@/components/MovieCard";
 import { AutoResizeTextArea } from "@/components/ui/AutoResizeTextarea";
 import { Loader2, Search, X } from "lucide-react";
-import { useSearch } from "@/context/SearchContext";
+import { type MovieResult, useSearch } from "@/context/SearchContext";
+import { useTypewriterEffect } from "@/hooks/useTypewriterEffect";
+
+const examplePrompts = [
+  "A movie where a man relives the same day",
+  "Tom Hanks stranded on an island",
+  "A team enters people's dreams to steal secrets",
+  "A girl travels to a magical land with a yellow brick road",
+  "A shark terrorizes a beach town",
+];
 
 const SearchPage = () => {
   const navigate = useNavigate();
@@ -19,50 +28,14 @@ const SearchPage = () => {
     clearResults,
   } = useSearch();
 
-  // Animated placeholder logic
-  const examplePrompts = [
-    "A movie where a man relives the same day",
-    "Tom Hanks stranded on an island",
-    "A team enters people's dreams to steal secrets",
-    "A girl travels to a magical land with a yellow brick road",
-    "A shark terrorizes a beach town",
-  ];
-  const [placeholder, setPlaceholder] = React.useState(examplePrompts[0]);
-  const [typingIdx, setTypingIdx] = React.useState(0);
-  const [charIdx, setCharIdx] = React.useState(0);
-  const [deleting, setDeleting] = React.useState(false);
-
-  React.useEffect(() => {
-    if (input.length > 0 || movieResults.length > 0 || error) {
-      setPlaceholder(examplePrompts[0]);
-      return;
-    } // Don't animate if user is typing
-    const prompt = examplePrompts[typingIdx];
-    let timeout: NodeJS.Timeout;
-    if (!deleting) {
-      if (charIdx < prompt.length) {
-        timeout = setTimeout(() => setCharIdx(charIdx + 1), 55);
-      } else {
-        timeout = setTimeout(() => setDeleting(true), 1200);
-      }
-    } else {
-      if (charIdx > 0) {
-        timeout = setTimeout(() => setCharIdx(charIdx - 1), 20);
-      } else {
-        setDeleting(false);
-        setTypingIdx((typingIdx + 1) % examplePrompts.length);
-      }
-    }
-    setPlaceholder(prompt.slice(0, charIdx));
-    return () => clearTimeout(timeout);
-  }, [charIdx, deleting, typingIdx, input, movieResults, error]);
+  const placeholder = useTypewriterEffect(examplePrompts);
 
   const onSearchClick = () => {
     handleSearch(input);
   };
 
   // Handle Enter/Shift+Enter in textarea
-  const handleInputKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+  const handleInputKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       onSearchClick();
@@ -70,11 +43,13 @@ const SearchPage = () => {
     // else allow default (including Shift+Enter for newline)
   };
 
-  const handleCardClick = (movie: any) => {
+  const handleCardClick = (movie: MovieResult) => {
     navigate(`/movie/${movie.id}`, {
       state: {
         movie,
-        similarMovies: movieResults.filter((m: any) => m.id !== movie.id),
+        similarMovies: movieResults.filter(
+          (m: MovieResult) => m.id !== movie.id
+        ),
       },
     });
   };
@@ -142,7 +117,11 @@ const SearchPage = () => {
               aria-label="Movie description"
               autoFocus
             />
-            <Button onClick={onSearchClick} disabled={isLoading} size={"lg"}>
+            <Button
+              onClick={onSearchClick}
+              disabled={isLoading}
+              size={"lg"}
+            >
               <Search />
               <span className="hidden sm:inline">Find My Movie</span>
             </Button>

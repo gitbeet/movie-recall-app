@@ -26,7 +26,10 @@ const Layout = () => {
       <nav className="bg-card border-b border-border">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
-            <Link to="/" className="flex items-center gap-1 text-lg">
+            <Link
+              to="/"
+              className="flex items-center gap-1 text-lg"
+            >
               <Film className="h-6 w-6 text-primary" />
               <span>
                 <b>
@@ -36,8 +39,15 @@ const Layout = () => {
             </Link>
             <div className="flex items-center gap-4">
               {/* Watchlist button - always visible */}
-              <Link to="/favorites" className="relative">
-                <Button variant="ghost" className="relative" size="icon">
+              <Link
+                to="/favorites"
+                className="relative"
+              >
+                <Button
+                  variant="ghost"
+                  className="relative"
+                  size="icon"
+                >
                   <span className="relative inline-block">
                     <Bookmark />
                     {favorites.length > 0 && (
@@ -53,7 +63,10 @@ const Layout = () => {
               <div className="hidden md:flex items-center gap-4">
                 {user ? (
                   <>
-                    <Button variant="outline" onClick={handleSignOut}>
+                    <Button
+                      variant="outline"
+                      onClick={handleSignOut}
+                    >
                       <LogOut />
                       <span className="sm:inline hidden"> Sign Out</span>
                     </Button>

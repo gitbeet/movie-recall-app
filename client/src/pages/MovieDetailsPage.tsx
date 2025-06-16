@@ -94,8 +94,10 @@ const MovieDetailsPage = () => {
         }
         const data = await response.json();
         setMovie(data);
-      } catch (err: any) {
-        setError(err.message);
+      } catch (err) {
+        setError(
+          err instanceof Error ? err.message : "An unknown error occurred"
+        );
       } finally {
         setIsLoading(false);
       }
@@ -138,7 +140,10 @@ const MovieDetailsPage = () => {
                 <div className="h-6 w-32 bg-muted rounded mb-4" />
                 <div className="flex flex-wrap gap-x-4 gap-y-2">
                   {Array.from({ length: 4 }).map((_, i) => (
-                    <div key={i} className="flex items-center gap-2">
+                    <div
+                      key={i}
+                      className="flex items-center gap-2"
+                    >
                       <div className="h-4 w-16 bg-muted rounded" /> {/* Job */}
                       <div className="h-4 w-20 bg-muted rounded" /> {/* Name */}
                       {i < 3 && (
@@ -172,7 +177,10 @@ const MovieDetailsPage = () => {
             <div className="h-8 w-32 bg-muted rounded mb-6" />
             <div className="flex gap-4">
               {Array.from({ length: 4 }).map((_, i) => (
-                <div key={i} className="w-48 h-28 bg-muted rounded" />
+                <div
+                  key={i}
+                  className="w-48 h-28 bg-muted rounded"
+                />
               ))}
             </div>
           </div>
@@ -181,7 +189,10 @@ const MovieDetailsPage = () => {
             <div className="h-8 w-56 bg-muted rounded mb-6" />
             <div className="flex gap-4">
               {Array.from({ length: 5 }).map((_, i) => (
-                <div key={i} className="w-56 h-80 bg-muted rounded" />
+                <div
+                  key={i}
+                  className="w-56 h-80 bg-muted rounded"
+                />
               ))}
             </div>
           </div>
@@ -234,7 +245,11 @@ const MovieDetailsPage = () => {
                     <ExternalLink className="w-4 h-4 mr-1" /> IMDb
                   </a>
                 )}
-                <ShareButton title={movie.title} url={window.location.href} className="ml-1" />
+                <ShareButton
+                  title={movie.title}
+                  url={window.location.href}
+                  className="ml-1"
+                />
               </div>
             </div>
             <div className="text-muted-foreground text-base md:text-lg mt-3 font-normal">
@@ -243,7 +258,10 @@ const MovieDetailsPage = () => {
             {movie.crew && movie.crew.length > 0 && (
               <div className="text-muted-foreground text-sm mb-3 flex flex-wrap gap-x-4 gap-y-1 mt-2">
                 {movie.crew!.map((member, idx) => (
-                  <span key={idx} className="flex items-center">
+                  <span
+                    key={idx}
+                    className="flex items-center"
+                  >
                     <span className="font-medium">{member.job}:</span>&nbsp;
                     {member.imdbUrl ? (
                       <a
@@ -267,7 +285,10 @@ const MovieDetailsPage = () => {
             )}
             <div className="flex flex-wrap gap-2 my-4">
               {movie.genres.map((genre) => (
-                <Badge key={genre} variant="secondary">
+                <Badge
+                  key={genre}
+                  variant="secondary"
+                >
                   {genre}
                 </Badge>
               ))}
@@ -283,7 +304,10 @@ const MovieDetailsPage = () => {
 
             <div className="mt-6 flex items-center gap-1.5">
               {movie.trailerUrl && (
-                <Button size="lg" onClick={() => setIsTrailerOpen(true)}>
+                <Button
+                  size="lg"
+                  onClick={() => setIsTrailerOpen(true)}
+                >
                   <PlayCircle />
                   <span>Watch Trailer</span>
                 </Button>
@@ -312,8 +336,8 @@ const MovieDetailsPage = () => {
                 />
                 <span>
                   {isInFavorites(movie.id)
-                    ? "Remove from Favorites"
-                    : "Add to Favorites"}
+                    ? "Remove from Watchlist"
+                    : "Add to Watchlist"}
                 </span>
               </Button>
             </div>

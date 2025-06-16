@@ -46,7 +46,7 @@ const MovieCard: React.FC<MovieCardProps> = ({
     <div className={topPick ? "relative" : ""}>
       {badgeLabel && (
         <div className="absolute -top-2 -left-2 z-10">
-          <Badge variant={badgeVariant as any}>{badgeLabel}</Badge>
+          <Badge variant={badgeVariant}>{badgeLabel}</Badge>
         </div>
       )}
       <Card
@@ -72,7 +72,7 @@ const MovieCard: React.FC<MovieCardProps> = ({
           </div>
         </CardHeader>
         <CardContent className="flex flex-col flex-1 p-2">
-          <CardTitle className="text-base font-semibold line-clamp-2 mb-1 line-clamp-1">
+          <CardTitle className="text-base font-semibold mb-1 line-clamp-1">
             {title}
           </CardTitle>
           {releaseYear && (

@@ -4,7 +4,7 @@ interface Movie {
   id: number;
   title: string;
   posterUrl?: string;
-  [key: string]: any;
+  movieId: number;
 }
 
 interface User {
