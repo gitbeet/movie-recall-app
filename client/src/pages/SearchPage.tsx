@@ -54,6 +54,11 @@ const SearchPage = () => {
     });
   };
 
+  const actualPlaceholder =
+    error || movieResults.length > 0
+      ? "Describe a scene, actor, or plot..."
+      : placeholder;
+
   return (
     <div className="p-4 sm:p-6 lg:p-8 relative min-h-screen overflow-x-hidden">
       <div className="max-w-6xl mx-auto">
@@ -113,7 +118,7 @@ const SearchPage = () => {
               }}
               onKeyDown={handleInputKeyDown}
               maxHeight={180}
-              placeholder={placeholder || "Describe a scene, actor, or plot..."}
+              placeholder={actualPlaceholder}
               aria-label="Movie description"
               autoFocus
             />
