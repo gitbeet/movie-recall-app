@@ -5,6 +5,9 @@ interface Movie {
   title: string;
   posterUrl?: string;
   movieId: number;
+  releaseYear?: string;
+  rating?: number;
+  description?: string;
 }
 
 interface User {
