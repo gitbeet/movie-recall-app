@@ -1,6 +1,6 @@
-import React from 'react';
-import useEmblaCarousel from 'embla-carousel-react';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import React from "react";
+import useEmblaCarousel from "embla-carousel-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 interface CastMember {
   id: number;
@@ -16,7 +16,10 @@ interface CastCarouselProps {
 }
 
 const CastCarousel: React.FC<CastCarouselProps> = ({ cast }) => {
-  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: false, dragFree: false }, []);
+  const [emblaRef, emblaApi] = useEmblaCarousel(
+    { loop: false, dragFree: false },
+    []
+  );
 
   const scrollPrev = React.useCallback(() => {
     if (emblaApi) emblaApi.scrollPrev();
@@ -28,12 +31,15 @@ const CastCarousel: React.FC<CastCarouselProps> = ({ cast }) => {
 
   return (
     <div className="relative group">
-      <div className="overflow-hidden py-2" ref={emblaRef}>
-        <div className="flex -ml-4">
+      <div
+        className="overflow-hidden py-2"
+        ref={emblaRef}
+      >
+        <div className="flex -ml-2">
           {cast.map((member, idx) => (
             <div
               key={member.name + idx}
-              className="flex-grow-0 flex-shrink-0 w-40 min-w-[10rem]"
+              className="flex-grow-0 flex-shrink-0 px-4 w-32"
             >
               <a
                 href={member.imdbUrl || member.tmdbUrl}

@@ -10,6 +10,11 @@ import TrailerModal from "@/components/modals/TrailerModal";
 import MovieCarousel from "@/components/ui/MovieCarousel";
 import CastCarousel from "@/components/ui/CastCarousel";
 import { useFavorites } from "@/context/FavoritesContext";
+import {
+  Tooltip,
+  TooltipTrigger,
+  TooltipContent,
+} from "@/components/ui/tooltip";
 
 interface CastMember {
   id: number;
@@ -35,6 +40,7 @@ interface MovieDetails {
   releaseYear: string;
   genres: string[];
   rating: number;
+  voteCount?: number;
   backdropUrl: string;
   images: {
     backdrops: string[];
@@ -256,7 +262,7 @@ const MovieDetailsPage = () => {
               {movie.releaseYear}
             </div>
             {movie.crew && movie.crew.length > 0 && (
-              <div className="text-muted-foreground text-sm mb-3 flex flex-wrap gap-x-4 gap-y-1 mt-2">
+              <div className="text-muted-foreground text-sm mb-3 flex flex-wrap gap-x-2 gap-y-1 mt-2">
                 {movie.crew!.map((member, idx) => (
                   <span
                     key={idx}
@@ -277,7 +283,7 @@ const MovieDetailsPage = () => {
                       member.name
                     )}
                     {idx < movie.crew!.length - 1 && (
-                      <span className="mx-2">&middot;</span>
+                      <span className="ml-2">&middot;</span>
                     )}
                   </span>
                 ))}
@@ -294,8 +300,16 @@ const MovieDetailsPage = () => {
               ))}
             </div>
             <div className="flex items-center gap-4 my-4">
-              <span className="text-xl font-bold text-primary">
-                ★ {movie.rating.toFixed(1)}
+              <span className="text-xl flex items-center">
+                <span className="text-yellow-400">★</span>
+                <span className="ml-1 font-bold  text-foreground">
+                  {movie.rating.toFixed(1)}
+                </span>
+                {typeof movie.voteCount === "number" && (
+                  <span className="ml-1 text-muted-foreground">
+                    ({movie.voteCount.toLocaleString()})
+                  </span>
+                )}
               </span>
             </div>
             <p className="text-base leading-relaxed text-muted-foreground">
@@ -312,34 +326,50 @@ const MovieDetailsPage = () => {
                   <span>Watch Trailer</span>
                 </Button>
               )}
-              <Button
-                size="lg"
-                variant={"outline"}
-                disabled={!user || loading}
-                onClick={async () => {
-                  if (!user) return;
-                  if (isInFavorites(movie.id)) {
-                    await removeFromFavorites(movie.id);
-                  } else {
-                    await addToFavorites({
-                      id: movie.id,
-                      title: movie.title,
-                      posterUrl: movie.posterUrl,
-                      description: movie.description,
-                      releaseYear: movie.releaseYear,
-                    });
-                  }
-                }}
-              >
-                <Bookmark
-                  fill={isInFavorites(movie.id) ? "currentColor" : "none"}
-                />
-                <span>
-                  {isInFavorites(movie.id)
-                    ? "Remove from Watchlist"
-                    : "Add to Watchlist"}
-                </span>
-              </Button>
+              {user ? (
+                <Button
+                  size="lg"
+                  variant={"outline"}
+                  disabled={loading}
+                  onClick={async () => {
+                    if (isInFavorites(movie.id)) {
+                      await removeFromFavorites(movie.id);
+                    } else {
+                      await addToFavorites({
+                        id: movie.id,
+                        title: movie.title,
+                        posterUrl: movie.posterUrl,
+                        movieId: movie.id,
+                      });
+                    }
+                  }}
+                >
+                  <Bookmark
+                    fill={isInFavorites(movie.id) ? "currentColor" : "none"}
+                  />
+                  <span>
+                    {isInFavorites(movie.id)
+                      ? "Remove from Watchlist"
+                      : "Add to Watchlist"}
+                  </span>
+                </Button>
+              ) : (
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      size="lg"
+                      variant={"outline"}
+                      className="cursor-not-allowed opacity-50"
+                    >
+                      <Bookmark fill="none" />
+                      <span>Add to Watchlist</span>
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    You need to sign in to add to watchlist
+                  </TooltipContent>
+                </Tooltip>
+              )}
             </div>
           </div>
         </div>

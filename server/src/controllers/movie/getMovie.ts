@@ -99,6 +99,7 @@ export const getMovieData = async (req: Request, res: Response) => {
         : "N/A",
       genres: movieData.genres.map((g: any) => g.name),
       rating: movieData.vote_average,
+      voteCount: movieData.vote_count,
       backdropUrl: movieData.backdrop_path
         ? `https://image.tmdb.org/t/p/original${movieData.backdrop_path}`
         : "",
