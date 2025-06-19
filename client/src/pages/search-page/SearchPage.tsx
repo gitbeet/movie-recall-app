@@ -121,10 +121,11 @@ const SearchPage = () => {
               placeholder={actualPlaceholder}
               aria-label="Movie description"
               autoFocus
+              data-testid="movie-search-input"
             />
             <Button
               onClick={onSearchClick}
-              disabled={isLoading}
+              disabled={isLoading || input.length === 0}
               size={"lg"}
             >
               <Search />
