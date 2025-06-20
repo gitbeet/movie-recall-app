@@ -43,7 +43,10 @@ const MovieCard: React.FC<MovieCardProps> = ({
   const emphasisClass = topPick ? "border-2 border-primary/50" : "";
 
   return (
-    <div className={topPick ? "relative" : ""}>
+    <div
+      data-testid="movie-card"
+      className={topPick ? "relative" : ""}
+    >
       {badgeLabel && (
         <div className="absolute -top-2 -left-2 z-10">
           <Badge variant={badgeVariant}>{badgeLabel}</Badge>
@@ -60,6 +63,7 @@ const MovieCard: React.FC<MovieCardProps> = ({
           <div className="aspect-[2/3] overflow-hidden">
             {posterUrl ? (
               <img
+                data-testid="movie-card-poster"
                 src={posterUrl}
                 alt={title}
                 className="w-full  object-cover group-hover/card:scale-105 transition-all duration-300"
@@ -72,7 +76,10 @@ const MovieCard: React.FC<MovieCardProps> = ({
           </div>
         </CardHeader>
         <CardContent className="flex flex-col flex-1 p-2">
-          <CardTitle className="text-base font-semibold mb-1 line-clamp-1">
+          <CardTitle
+            data-testid="movie-card-title"
+            className="text-base font-semibold mb-1 line-clamp-1"
+          >
             {title}
           </CardTitle>
           {releaseYear && (
@@ -85,9 +92,12 @@ const MovieCard: React.FC<MovieCardProps> = ({
               ★ {rating.toFixed(1)}
             </div>
           )}
-          <div className="text-xs text-muted-foreground min-h-[2.5em] line-clamp-2 flex-1">
+          <p
+            data-testid="movie-card-description"
+            className="text-xs text-muted-foreground min-h-[2.5em] line-clamp-2 flex-1"
+          >
             {description}
-          </div>
+          </p>
         </CardContent>
       </Card>
     </div>
