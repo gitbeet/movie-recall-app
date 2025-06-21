@@ -38,6 +38,7 @@ const CastCarousel: React.FC<CastCarouselProps> = ({ cast }) => {
         <div className="flex -ml-2">
           {cast.map((member, idx) => (
             <div
+              data-testid="cast-member"
               key={member.name + idx}
               className="flex-grow-0 flex-shrink-0 px-4 w-32"
             >
@@ -58,10 +59,16 @@ const CastCarousel: React.FC<CastCarouselProps> = ({ cast }) => {
                     ?
                   </div>
                 )}
-                <span className="font-semibold text-sm text-center line-clamp-2 hover:underline">
+                <span
+                  data-testid="cast-member-name"
+                  className="font-semibold text-sm text-center line-clamp-2 hover:underline"
+                >
                   {member.name}
                 </span>
-                <span className="text-xs text-muted-foreground text-center line-clamp-2">
+                <span
+                  data-testid="cast-member-character"
+                  className="text-xs text-muted-foreground text-center line-clamp-2"
+                >
                   {member.character}
                 </span>
               </a>

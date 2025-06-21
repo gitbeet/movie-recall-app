@@ -51,6 +51,7 @@ const ImageCarousel: React.FC<ImageCarouselProps> = ({ images }) => {
               onClick={() => setSelectedImageIndex(index)}
             >
               <img
+                data-testid="movie-image"
                 src={src}
                 alt={`Carousel image ${index + 1}`}
                 className="w-full h-auto object-cover transition-transform duration-200 hover:scale-105 hover:shadow-lg origin-center"

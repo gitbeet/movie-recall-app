@@ -1,6 +1,7 @@
 import { HttpResponse, http } from "msw";
 
 export const handlers = [
+  // Handler for movie results
   http.post(`${import.meta.env.VITE_API_BASE_URL}/api/movie/find`, () =>
     HttpResponse.json([
       {
@@ -75,5 +76,79 @@ export const handlers = [
       },
     ])
   ),
-  // Add more handlers as needed
+  // Handler for movie details
+  http.get(
+    `${import.meta.env.VITE_API_BASE_URL}/api/movie/:id`,
+    ({ params }) => {
+      const { id } = params;
+      return HttpResponse.json({
+        id: Number(id),
+        title: `Mock Movie ${id}`,
+        description: `Mock Movie Description ${id}`,
+        posterUrl: `https://via.placeholder.com/150?text=Poster+${id}`,
+        releaseYear: `2025`,
+        genres: ["Mock Movie Genre 1", "Mock Movie Genre 2"],
+        rating: 7.5,
+        voteCount: 100,
+        backdropUrl: `https://via.placeholder.com/600x300?text=Backdrop+${id}`,
+        images: {
+          backdrops: [
+            `https://via.placeholder.com/600x300?text=Backdrop+${id}`,
+          ],
+          posters: [`https://via.placeholder.com/150?text=Poster+${id}`],
+        },
+        trailerUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+        cast: [
+          {
+            id: 1,
+            name: "Mock Cast Member 1",
+            character: "Mock Character Name 1",
+            profileUrl: null,
+          },
+          {
+            id: 2,
+            name: "Mock Cast Member 2",
+            character: "Mock Character Name 2",
+            profileUrl: null,
+          },
+        ],
+        crew: [{ id: 1, name: "Mock Crew Member 1", job: "Mock Crew Member" }],
+        imdbUrl: "https://www.imdb.com/title/tt1234567/",
+      });
+    }
+  ),
+  // Handler for user data
+  http.get(`${import.meta.env.VITE_API_BASE_URL}/api/user/me`, () =>
+    HttpResponse.json({
+      id: 1,
+      email: "mockuser@example.com",
+    })
+  ),
+  // Handler for getting the user's favorites
+  http.get(
+    `${import.meta.env.VITE_API_BASE_URL}/api/user/:id/favorites`,
+    ({ params }) => {
+      const { id } = params;
+      HttpResponse.json([
+        {
+          id,
+          title: "Mock Favorite Movie 1",
+          posterUrl: "https://via.placeholder.com/150?text=Favorite+1",
+          movieId: 1,
+        },
+        {
+          id,
+          title: "Mock Favorite Movie 2",
+          posterUrl: "https://via.placeholder.com/150?text=Favorite+2",
+          movieId: 2,
+        },
+        {
+          id,
+          title: "Mock Favorite Movie 3",
+          posterUrl: "https://via.placeholder.com/150?text=Favorite+3",
+          movieId: 3,
+        },
+      ]);
+    }
+  ),
 ];

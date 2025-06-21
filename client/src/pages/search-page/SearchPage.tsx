@@ -121,7 +121,6 @@ const SearchPage = () => {
               placeholder={actualPlaceholder}
               aria-label="Movie description"
               autoFocus
-              data-testid="movie-search-input"
             />
             <Button
               onClick={onSearchClick}
@@ -157,9 +156,6 @@ const SearchPage = () => {
                 </div>
                 {/* Top 3 results */}
                 <div className="mb-8">
-                  {/* <h2 className="text-2xl text-center font-semibold text-primary mb-8">
-                    You were probably looking for one of these
-                  </h2> */}
                   <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 ">
                     {movieResults.slice(0, 3).map((movie, idx) => (
                       <div

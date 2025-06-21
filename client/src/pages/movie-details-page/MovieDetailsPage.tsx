@@ -116,9 +116,15 @@ const MovieDetailsPage = () => {
 
   if (isLoading)
     return (
-      <div className="w-full animate-pulse">
+      <div
+        className="w-full animate-pulse"
+        data-testid="movie-details-skeleton"
+      >
         {/* Backdrop skeleton */}
-        <div className="w-full h-[30vh] md:h-[50vh] bg-muted/30" />
+        <div
+          className="w-full h-[30vh] md:h-[50vh] bg-muted/30"
+          data-testid="movie-details-skeleton-backdrop"
+        />
         <div className="max-w-6xl mx-auto p-4 sm:p-6 lg:p-8 -mt-40 md:-mt-64 relative z-10 space-y-16">
           {/* Back to Homepage Button Skeleton */}
           <div className="mb-4 w-48 h-10 rounded-lg bg-muted" />
@@ -210,7 +216,10 @@ const MovieDetailsPage = () => {
   if (!movie) return <p className="text-center mt-12">Movie not found.</p>;
 
   return (
-    <div className="w-full">
+    <div
+      className="w-full"
+      data-testid="movie-details-page"
+    >
       <div
         className="w-full h-[40dvh] bg-cover bg-center bg-no-repeat relative"
         style={{ backgroundImage: `url(${movie.backdropUrl})` }}
@@ -232,7 +241,7 @@ const MovieDetailsPage = () => {
           <div className="md:w-1/3 flex-shrink-0">
             <img
               src={movie.posterUrl}
-              alt={movie.title}
+              alt={`${movie.title} poster`}
               className="w-full rounded-lg shadow-2xl"
             />
           </div>
@@ -258,7 +267,10 @@ const MovieDetailsPage = () => {
                 />
               </div>
             </div>
-            <div className="text-muted-foreground text-base md:text-lg mt-3 font-normal">
+            <div
+              data-testid="movie-release-year"
+              className="text-muted-foreground text-base md:text-lg mt-3 font-normal"
+            >
               {movie.releaseYear}
             </div>
             {movie.crew && movie.crew.length > 0 && (
@@ -267,8 +279,15 @@ const MovieDetailsPage = () => {
                   <span
                     key={idx}
                     className="flex items-center"
+                    data-testid="crew-member"
                   >
-                    <span className="font-medium">{member.job}:</span>&nbsp;
+                    <span
+                      className="font-medium"
+                      data-testid="crew-member-job"
+                    >
+                      {member.job}:
+                    </span>
+                    &nbsp;
                     {member.imdbUrl ? (
                       <a
                         href={member.imdbUrl}
@@ -292,6 +311,7 @@ const MovieDetailsPage = () => {
             <div className="flex flex-wrap gap-2 my-4">
               {movie.genres.map((genre) => (
                 <Badge
+                  data-testid="movie-genre"
                   key={genre}
                   variant="secondary"
                 >
@@ -302,17 +322,26 @@ const MovieDetailsPage = () => {
             <div className="flex items-center gap-4 my-4">
               <span className="text-xl flex items-center">
                 <span className="text-yellow-400">★</span>
-                <span className="ml-1 font-bold  text-foreground">
+                <span
+                  data-testid="movie-rating"
+                  className="ml-1 font-bold  text-foreground"
+                >
                   {movie.rating.toFixed(1)}
                 </span>
                 {typeof movie.voteCount === "number" && (
-                  <span className="ml-1 text-muted-foreground">
+                  <span
+                    data-testid="movie-vote-count"
+                    className="ml-1 text-muted-foreground"
+                  >
                     ({movie.voteCount.toLocaleString()})
                   </span>
                 )}
               </span>
             </div>
-            <p className="text-base leading-relaxed text-muted-foreground">
+            <p
+              data-testid="movie-description"
+              className="text-base leading-relaxed text-muted-foreground"
+            >
               {movie.description}
             </p>
 
