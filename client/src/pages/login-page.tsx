@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useFavorites } from "@/context/favorites-context";
-import { LoginForm } from "@/components/common/login-form";
+import { LoginForm } from "@/components/common/login-form/login-form";
 
 const API_BASE =
   import.meta.env.VITE_API_BASE_URL || "http://localhost:3001/api";

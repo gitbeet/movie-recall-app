@@ -76,14 +76,13 @@ export function LoginForm({
                   name="email"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Email</FormLabel>
+                      <FormLabel htmlFor="email">Email</FormLabel>
                       <FormControl>
                         <Input
                           id="email"
                           type="email"
                           placeholder="m@example.com"
                           autoFocus
-                          autoComplete="email"
                           disabled={loading}
                           {...field}
                         />
@@ -98,7 +97,7 @@ export function LoginForm({
                   render={({ field }) => (
                     <FormItem>
                       <div className="flex items-center">
-                        <FormLabel>Password</FormLabel>
+                        <FormLabel htmlFor="password">Password</FormLabel>
                         <a
                           href="#"
                           className="ml-auto text-sm underline-offset-2 hover:underline cursor-pointer"
@@ -110,7 +109,6 @@ export function LoginForm({
                         <Input
                           id="password"
                           type="password"
-                          autoComplete="current-password"
                           disabled={loading}
                           {...field}
                         />
