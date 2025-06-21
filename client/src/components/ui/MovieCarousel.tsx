@@ -1,7 +1,7 @@
-import React, { useCallback } from 'react';
-import useEmblaCarousel from 'embla-carousel-react';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
-import MovieCard from '../MovieCard';
+import React, { useCallback } from "react";
+import useEmblaCarousel from "embla-carousel-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import MovieCard from "../common/MovieCard";
 
 interface MovieSummary {
   id: number;
@@ -17,8 +17,14 @@ interface MovieCarouselProps {
   onMovieClick?: (movie: MovieSummary) => void;
 }
 
-const MovieCarousel: React.FC<MovieCarouselProps> = ({ movies, onMovieClick }) => {
-  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true, dragFree: true }, []);
+const MovieCarousel: React.FC<MovieCarouselProps> = ({
+  movies,
+  onMovieClick,
+}) => {
+  const [emblaRef, emblaApi] = useEmblaCarousel(
+    { loop: true, dragFree: true },
+    []
+  );
 
   const scrollPrev = useCallback(() => {
     if (emblaApi) emblaApi.scrollPrev();
@@ -30,7 +36,10 @@ const MovieCarousel: React.FC<MovieCarouselProps> = ({ movies, onMovieClick }) =
 
   return (
     <div className="relative group">
-      <div className="overflow-hidden" ref={emblaRef}>
+      <div
+        className="overflow-hidden"
+        ref={emblaRef}
+      >
         <div className="flex -ml-4">
           {movies.map((movie) => (
             <div

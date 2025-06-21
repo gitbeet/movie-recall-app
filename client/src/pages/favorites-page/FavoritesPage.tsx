@@ -2,7 +2,7 @@ import { useFavorites } from "@/context/FavoritesContext";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Bookmark, ArrowLeft } from "lucide-react";
-import MovieCard from "@/components/MovieCard";
+import MovieCard from "@/components/common/MovieCard";
 
 export default function FavoritesPage() {
   const { favorites, removeFromFavorites, loading, user } = useFavorites();

@@ -1,10 +1,10 @@
 import { useState } from "react";
-import { ModeToggle } from "./ui/mode-toggle";
-import { Button } from "./ui/button";
+import { ModeToggle } from "../ui/mode-toggle";
+import { Button } from "../ui/button";
 import { LogIn, LogOut, Menu, X } from "lucide-react";
 import { useFavorites } from "@/context/FavoritesContext";
 import { useNavigate } from "react-router-dom";
-import styles from "./MobileMenu.module.css";
+import styles from "../../styles/MobileMenu.module.css";
 import React from "react";
 
 export default function MobileMenu() {
@@ -52,27 +52,44 @@ export default function MobileMenu() {
         <div className="fixed inset-0 z-50 flex">
           {/* Backdrop with blur and semitransparent effect and fade animation */}
           <div
-            className={`fixed inset-0 bg-black/40 backdrop-blur-md ${closing ? styles.backdropFadeOut : styles.backdropFadeIn}`}
+            className={`fixed inset-0 bg-black/40 backdrop-blur-md ${
+              closing ? styles.backdropFadeOut : styles.backdropFadeIn
+            }`}
             onClick={closeMenu}
           />
           {/* Slide-in menu from right with exit animation */}
           <nav
-            className={`relative ml-auto w-64 max-w-full bg-card shadow-lg flex flex-col gap-6 p-6 ${closing ? styles.slideOutRight : styles.slideInRight}`}
+            className={`relative ml-auto w-64 max-w-full bg-card shadow-lg flex flex-col gap-6 p-6 ${
+              closing ? styles.slideOutRight : styles.slideInRight
+            }`}
             style={{ right: 0 }}
           >
             <div className="flex items-center justify-between mb-4">
               <span className="text-lg font-semibold">Menu</span>
-              <Button variant="ghost" size="icon" aria-label="Close menu" onClick={closeMenu}>
+              <Button
+                variant="ghost"
+                size="icon"
+                aria-label="Close menu"
+                onClick={closeMenu}
+              >
                 <X className="h-6 w-6" />
               </Button>
             </div>
             <ModeToggle />
             {user ? (
-              <Button variant="outline" onClick={handleSignOut} className="w-full flex items-center gap-2">
+              <Button
+                variant="outline"
+                onClick={handleSignOut}
+                className="w-full flex items-center gap-2"
+              >
                 <LogOut /> <span>Sign Out</span>
               </Button>
             ) : (
-              <Button variant="default" onClick={handleSignIn} className="w-full flex items-center gap-2">
+              <Button
+                variant="default"
+                onClick={handleSignIn}
+                className="w-full flex items-center gap-2"
+              >
                 <LogIn /> <span>Sign In</span>
               </Button>
             )}

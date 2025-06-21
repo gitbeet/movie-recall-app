@@ -2,6 +2,20 @@ import { render, screen } from "../../test-utils";
 import { describe, expect, test } from "vitest";
 import MovieDetailsPage from "./MovieDetailsPage";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
+import * as FavoritesContext from "@/context/FavoritesContext";
+import { vi } from "vitest";
+
+// Mock FavoritesContext to prevent real fetches and async effects
+vi.spyOn(FavoritesContext, "useFavorites").mockReturnValue({
+  user: null,
+  favorites: [],
+  addToFavorites: vi.fn(),
+  removeFromFavorites: vi.fn(),
+  isInFavorites: vi.fn(),
+  loading: false,
+  fetchFavorites: vi.fn(),
+  refetchUser: vi.fn(),
+});
 
 const renderMovieDetailsPage = () => {
   render(

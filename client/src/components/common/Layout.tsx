@@ -1,8 +1,8 @@
 import { Link, Outlet } from "react-router-dom";
-import { ModeToggle } from "./ui/mode-toggle";
-import MobileMenu from "./MobileMenu";
+import { ModeToggle } from "../ui/mode-toggle";
+import MobileMenu from "../common/MobileMenu";
 import { Bookmark, Film, LogIn, LogOut } from "lucide-react";
-import { Button } from "./ui/button";
+import { Button } from "../ui/button";
 
 import { useFavorites } from "@/context/FavoritesContext";
 import { useNavigate } from "react-router-dom";
