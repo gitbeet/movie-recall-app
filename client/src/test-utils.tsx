@@ -1,6 +1,6 @@
 import { render } from "@testing-library/react";
 import type { RenderOptions, RenderResult } from "@testing-library/react";
-import { Providers } from "./components/common/pproviders";
+import { Providers } from "./components/common/providers";
 
 const renderWithProviders = (
   ui: React.ReactNode,
