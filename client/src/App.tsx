@@ -2,7 +2,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Layout from "./components/Layout";
 import SearchPage from "./pages/search-page/SearchPage";
 import MovieDetailsPage from "./pages/movie-details-page/MovieDetailsPage";
-import FavoritesPage from "./pages/FavoritesPage";
+import FavoritesPage from "./pages/favorites-page/FavoritesPage";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import NotFoundPage from "./pages/not-found-page/NotFoundPage";

@@ -15,7 +15,7 @@ interface User {
   email: string;
 }
 
-interface FavoritesContextType {
+export interface FavoritesContextType {
   favorites: Movie[];
   addToFavorites: (movie: Movie) => Promise<void>;
   removeFromFavorites: (movieId: number) => Promise<void>;
