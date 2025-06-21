@@ -1,8 +1,8 @@
 import { render, screen } from "../../test-utils";
 import { describe, expect, test } from "vitest";
-import MovieDetailsPage from "./MovieDetailsPage";
+import MovieDetailsPage from "./movie-details-page";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
-import * as FavoritesContext from "@/context/FavoritesContext";
+import * as FavoritesContext from "@/context/favorites-context";
 import { vi } from "vitest";
 
 // Mock FavoritesContext to prevent real fetches and async effects

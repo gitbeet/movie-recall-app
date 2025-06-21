@@ -1,15 +1,15 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { useSearch } from "@/context/SearchContext";
+import { useSearch } from "@/context/search-context";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import ImageCarousel from "@/components/ui/ImageCarousel";
+import ImageCarousel from "@/components/ui/image-carousel";
 import { PlayCircle, Bookmark, ArrowLeft, ExternalLink } from "lucide-react";
-import { ShareButton } from "@/components/ui/ShareButton";
-import TrailerModal from "@/components/modals/TrailerModal";
-import MovieCarousel from "@/components/ui/MovieCarousel";
-import CastCarousel from "@/components/ui/CastCarousel";
-import { useFavorites } from "@/context/FavoritesContext";
+import { ShareButton } from "@/components/ui/share-button";
+import TrailerModal from "@/components/modals/trailer-modal";
+import MovieCarousel from "@/components/ui/movie-carousel";
+import CastCarousel from "@/components/ui/cast-carousel";
+import { useFavorites } from "@/context/favorites-context";
 import {
   Tooltip,
   TooltipTrigger,

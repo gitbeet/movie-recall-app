@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from "react";
 import useEmblaCarousel from "embla-carousel-react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import ImageModal from "../modals/ImageModal";
+import ImageModal from "../modals/image-modal";
 
 interface ImageCarouselProps {
   images: string[];

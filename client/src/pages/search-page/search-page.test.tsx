@@ -1,9 +1,9 @@
 import { render, screen } from "@/test-utils";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
-import SearchPage from "./SearchPage";
+import SearchPage from "./search-page";
 import userEvent from "@testing-library/user-event";
 import { describe, test, expect } from "vitest";
-import MovieDetailsPage from "../movie-details-page/MovieDetailsPage";
+import MovieDetailsPage from "../movie-details-page/movie-details-page";
 
 describe("Search Page", () => {
   const renderSearchPage = () =>

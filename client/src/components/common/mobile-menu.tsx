@@ -2,9 +2,9 @@ import { useState } from "react";
 import { ModeToggle } from "../ui/mode-toggle";
 import { Button } from "../ui/button";
 import { LogIn, LogOut, Menu, X } from "lucide-react";
-import { useFavorites } from "@/context/FavoritesContext";
+import { useFavorites } from "@/context/favorites-context";
 import { useNavigate } from "react-router-dom";
-import styles from "../../styles/MobileMenu.module.css";
+import styles from "../../styles/mobile-menu.module.css";
 import React from "react";
 
 export default function MobileMenu() {

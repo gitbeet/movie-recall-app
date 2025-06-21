@@ -1,11 +1,11 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Layout from "./components/common/Layout";
-import SearchPage from "./pages/search-page/SearchPage";
-import MovieDetailsPage from "./pages/movie-details-page/MovieDetailsPage";
-import FavoritesPage from "./pages/favorites-page/FavoritesPage";
-import LoginPage from "./pages/LoginPage";
-import RegisterPage from "./pages/RegisterPage";
-import NotFoundPage from "./pages/not-found-page/NotFoundPage";
+import Layout from "./components/common/llayout";
+import SearchPage from "./pages/search-page/search-page";
+import MovieDetailsPage from "./pages/movie-details-page/movie-details-page";
+import FavoritesPage from "./pages/favorites-page/favorites-page";
+import LoginPage from "./pages/login-page";
+import RegisterPage from "./pages/register-page";
+import NotFoundPage from "./pages/not-found-page/not-found-page";
 
 function App() {
   return (

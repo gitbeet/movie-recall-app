@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useFavorites } from "@/context/FavoritesContext";
+import { useFavorites } from "@/context/favorites-context";
 import { LoginForm } from "@/components/common/login-form";
 
 const API_BASE =

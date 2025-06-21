@@ -1,11 +1,11 @@
 import { type KeyboardEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import MovieCard from "@/components/common/MovieCard";
-import { AutoResizeTextArea } from "@/components/ui/AutoResizeTextarea";
+import MovieCard from "@/components/common/movie-card";
+import { AutoResizeTextArea } from "@/components/ui/auto-resize-text-area";
 import { Loader2, Search, X } from "lucide-react";
-import { type MovieResult, useSearch } from "@/context/SearchContext";
-import { useTypewriterEffect } from "@/hooks/useTypewriterEffect";
+import { type MovieResult, useSearch } from "@/context/search-context";
+import { useTypewriterEffect } from "@/hooks/useTypewritterEffect";
 
 const examplePrompts = [
   "A movie where a man relives the same day",

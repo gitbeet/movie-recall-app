@@ -1,9 +1,9 @@
 import { MemoryRouter } from "react-router-dom";
 import { describe, test, expect, vi, beforeEach } from "vitest";
-import FavoritesPage from "./FavoritesPage";
+import FavoritesPage from "./favorites-page";
 import { render, screen } from "../../test-utils";
-import * as FavoritesContext from "@/context/FavoritesContext";
-import { type FavoritesContextType } from "@/context/FavoritesContext";
+import * as FavoritesContext from "@/context/favorites-context";
+import { type FavoritesContextType } from "@/context/favorites-context";
 
 const renderFavoritesPage = () => {
   render(

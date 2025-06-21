@@ -1,7 +1,7 @@
 import { Button } from "./button";
 import { Share2 } from "lucide-react";
 import React from "react";
-import { ShareDropdown } from "./ShareDropdown";
+import { ShareDropdown } from "./share-dropdown";
 import { Popover, PopoverTrigger, PopoverContent } from "./popover";
 
 interface ShareButtonProps {
@@ -72,8 +72,14 @@ export const ShareButton: React.FC<ShareButtonProps> = ({
           <span className="sr-only">Share</span>
         </Button>
       </PopoverTrigger>
-      <PopoverContent align="end" className="p-0 w-48">
-        <ShareDropdown url={url} title={title} />
+      <PopoverContent
+        align="end"
+        className="p-0 w-48"
+      >
+        <ShareDropdown
+          url={url}
+          title={title}
+        />
       </PopoverContent>
     </Popover>
   );
