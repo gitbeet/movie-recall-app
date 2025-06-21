@@ -5,7 +5,7 @@ import MovieDetailsPage from "./pages/movie-details-page/MovieDetailsPage";
 import FavoritesPage from "./pages/FavoritesPage";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
-import NotFoundPage from "./pages/NotFoundPage";
+import NotFoundPage from "./pages/not-found-page/NotFoundPage";
 import { SearchProvider } from "./context/SearchContext";
 import { FavoritesProvider } from "./context/FavoritesContext";
 
