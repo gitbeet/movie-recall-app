@@ -1,7 +1,8 @@
 import { describe, test, expect, vi } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import { RegisterForm, type RegisterFormProps } from "./register-form";
 import { MemoryRouter } from "react-router-dom";
+import userEvent from "@testing-library/user-event";
 
 const renderRegisterForm = (props: Partial<RegisterFormProps> = {}) => {
   const defaultProps: RegisterFormProps = {
@@ -19,6 +20,10 @@ const renderRegisterForm = (props: Partial<RegisterFormProps> = {}) => {
       />
     </MemoryRouter>
   );
+
+  return {
+    onRegisterMock: defaultProps.onRegister,
+  };
 };
 
 describe("register-form", () => {
@@ -79,13 +84,140 @@ describe("register-form", () => {
       expect(signUpWithGoogleButton).toBeDisabled();
     });
 
-    test("renders the sign in link", () => {
+    test("renders the sign in link and it has the correct href", () => {
       renderRegisterForm();
       const signInLink = screen.getByRole("link", {
         name: /sign in/i,
       });
       expect(signInLink).toBeInTheDocument();
       expect(signInLink).toHaveAttribute("href", "/login");
+    });
+  });
+
+  describe("form validation", () => {
+    test("email is required", async () => {
+      renderRegisterForm();
+      const emailInput = screen.getByRole("textbox", { name: /email/i });
+      const signUpButton = screen.getByRole("button", { name: "Sign up" });
+
+      await userEvent.click(signUpButton);
+
+      const errorMessage = screen.getByText(/email is required/i);
+      expect(errorMessage).toBeInTheDocument();
+      expect(emailInput).toHaveAttribute("aria-invalid", "true");
+    });
+
+    test("email is valid", async () => {
+      renderRegisterForm();
+      const emailInput = screen.getByRole("textbox", { name: /email/i });
+      const signUpButton = screen.getByRole("button", { name: "Sign up" });
+
+      await userEvent.type(emailInput, "test");
+      await userEvent.click(signUpButton);
+
+      const errorMessage = screen.getByText(/invalid email address/i);
+      expect(errorMessage).toBeInTheDocument();
+
+      await userEvent.clear(emailInput);
+      await userEvent.type(emailInput, "test@test.com");
+      await userEvent.click(signUpButton);
+
+      const errorMessageAfter = screen.queryByText(/invalid email address/i);
+      expect(errorMessageAfter).not.toBeInTheDocument();
+      expect(emailInput).toHaveAttribute("aria-invalid", "false");
+    });
+
+    test("password is required", async () => {
+      renderRegisterForm();
+      const passwordInput = screen.getByLabelText("Password");
+      const signUpButton = screen.getByRole("button", { name: "Sign up" });
+
+      await userEvent.click(signUpButton);
+
+      const errorMessage = await screen.findByText("Password is required");
+      expect(errorMessage).toBeInTheDocument();
+      expect(passwordInput).toHaveAttribute("aria-invalid", "true");
+    });
+
+    test("password is valid", async () => {
+      renderRegisterForm();
+      const passwordInput = screen.getByLabelText("Password");
+      const signUpButton = screen.getByRole("button", { name: "Sign up" });
+
+      await userEvent.type(passwordInput, "123");
+      await userEvent.click(signUpButton);
+
+      const errorMessage = await screen.findByText(
+        "Password must be at least 6 characters"
+      );
+      expect(errorMessage).toBeInTheDocument();
+      expect(passwordInput).toHaveAttribute("aria-invalid", "true");
+
+      await userEvent.clear(passwordInput);
+      await userEvent.type(passwordInput, "123456");
+
+      const errorMessageAfter = screen.queryByText(
+        "Password must be at least 6 characters"
+      );
+      expect(errorMessageAfter).not.toBeInTheDocument();
+      expect(passwordInput).toHaveAttribute("aria-invalid", "false");
+    });
+
+    test("confirm password is required", async () => {
+      renderRegisterForm();
+      const confirmPasswordInput = screen.getByLabelText("Confirm Password");
+      const signUpButton = screen.getByRole("button", { name: "Sign up" });
+
+      await userEvent.click(signUpButton);
+
+      const errorMessage = await screen.findByText(
+        "Confirm password is required"
+      );
+      expect(errorMessage).toBeInTheDocument();
+      expect(confirmPasswordInput).toHaveAttribute("aria-invalid", "true");
+    });
+
+    test("passwords do not match", async () => {
+      renderRegisterForm();
+      const passwordInput = screen.getByLabelText("Password");
+      const confirmPasswordInput = screen.getByLabelText("Confirm Password");
+      const signUpButton = screen.getByRole("button", { name: "Sign up" });
+
+      await userEvent.type(passwordInput, "123456");
+      await userEvent.type(confirmPasswordInput, "1234567");
+      await userEvent.click(signUpButton);
+
+      const errorMessage = await screen.findByText(/passwords do not match/i);
+      expect(errorMessage).toBeInTheDocument();
+      expect(confirmPasswordInput).toHaveAttribute("aria-invalid", "true");
+
+      await userEvent.clear(confirmPasswordInput);
+      await userEvent.type(confirmPasswordInput, "123456");
+      await userEvent.click(signUpButton);
+
+      const errorMessageAfter = screen.queryByText(/passwords do not match/i);
+      expect(errorMessageAfter).not.toBeInTheDocument();
+      expect(confirmPasswordInput).toHaveAttribute("aria-invalid", "false");
+    });
+  });
+
+  describe.only("form submission", () => {
+    test("submitting the form with valid data", async () => {
+      const { onRegisterMock } = renderRegisterForm();
+      const emailInput = screen.getByRole("textbox", { name: /email/i });
+      const passwordInput = screen.getByLabelText("Password");
+      const confirmPasswordInput = screen.getByLabelText("Confirm Password");
+      const signUpButton = screen.getByRole("button", { name: "Sign up" });
+
+      await userEvent.type(emailInput, "test@test.com");
+      await userEvent.type(passwordInput, "123456");
+      await userEvent.type(confirmPasswordInput, "123456");
+      await userEvent.click(signUpButton);
+
+      await waitFor(() => {
+        expect(onRegisterMock).toHaveBeenCalledTimes(1);
+        expect(onRegisterMock).toHaveBeenCalledWith("test@test.com", "123456");
+      });
     });
   });
 });

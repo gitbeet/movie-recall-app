@@ -26,11 +26,21 @@ export interface RegisterFormProps extends React.ComponentProps<"div"> {
 // Define Zod schema for form validation
 const registerSchema = z
   .object({
-    email: z.string().email({ message: "Invalid email address" }),
+    email: z
+      .string()
+      .min(1, {
+        message: "Email is required",
+      })
+      .email({ message: "Invalid email address" }),
     password: z
       .string()
+      .min(1, {
+        message: "Password is required",
+      })
       .min(6, { message: "Password must be at least 6 characters" }),
-    confirmPassword: z.string(),
+    confirmPassword: z.string().min(1, {
+      message: "Confirm password is required",
+    }),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "Passwords do not match",
@@ -49,6 +59,11 @@ export function RegisterForm({
 }: RegisterFormProps) {
   const form = useForm<RegisterFormValues>({
     resolver: zodResolver(registerSchema),
+    defaultValues: {
+      email: "",
+      password: "",
+      confirmPassword: "",
+    },
   });
   const { handleSubmit, control } = form;
 
