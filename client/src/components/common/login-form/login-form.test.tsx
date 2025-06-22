@@ -1,19 +1,26 @@
-import { render, screen } from "@testing-library/react";
-import { LoginForm } from "./login-form";
-import { describe, test, expect } from "vitest";
+import { render, screen, waitFor } from "@testing-library/react";
+import { LoginForm, type LoginFormProps } from "./login-form";
+import { describe, test, expect, vi } from "vitest";
 import { MemoryRouter } from "react-router-dom";
 import userEvent from "@testing-library/user-event";
 
-const renderSignInForm = () => {
+const renderSignInForm = (props: Partial<LoginFormProps> = {}) => {
+  const defaultProps = {
+    onLogin: vi.fn(),
+    loading: false,
+    error: null,
+  };
+
   render(
     <MemoryRouter>
       <LoginForm
-        onLogin={() => {}}
-        loading={false}
-        error={null}
+        {...defaultProps}
+        {...props}
       />
     </MemoryRouter>
   );
+
+  return { onLoginMock: defaultProps.onLogin };
 };
 
 describe("login-form", () => {
@@ -61,7 +68,16 @@ describe("login-form", () => {
       expect(signInButton).toBeEnabled();
     });
 
-    test("renders the sign in with google button and it is disabled", async () => {
+    test.only("Sign In button has the correct text and is disabled when loading is true", () => {
+      renderSignInForm({ loading: true });
+      const signInButton = screen.getByRole("button", {
+        name: "Signing in...",
+      });
+      expect(signInButton).toBeInTheDocument();
+      expect(signInButton).toBeDisabled();
+    });
+
+    test("renders the sign in with google button and it is disabled", () => {
       renderSignInForm();
       const signInWithGoogleButton = screen.getByRole("button", {
         name: /sign in with google|continue with google/i,
@@ -151,6 +167,25 @@ describe("login-form", () => {
       );
       expect(errorMessageAfter).not.toBeInTheDocument();
       expect(passwordInput).toHaveAttribute("aria-invalid", "false");
+    });
+  });
+
+  describe("form submission", () => {
+    test("submitting the form with valid email and password", async () => {
+      const { onLoginMock } = renderSignInForm();
+
+      const emailInput = screen.getByRole("textbox", { name: /email/i });
+      const passwordInput = screen.getByLabelText(/password/i);
+      const signInButton = screen.getByRole("button", { name: "Sign In" });
+
+      await userEvent.type(emailInput, "test@test.com");
+      await userEvent.type(passwordInput, "123456");
+      await userEvent.click(signInButton);
+
+      await waitFor(() => {
+        expect(onLoginMock).toHaveBeenCalledTimes(1);
+        expect(onLoginMock).toHaveBeenCalledWith("test@test.com", "123456");
+      });
     });
   });
 });

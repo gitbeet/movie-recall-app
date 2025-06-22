@@ -17,7 +17,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 
-interface LoginFormProps extends React.ComponentProps<"div"> {
+export interface LoginFormProps extends React.ComponentProps<"div"> {
   loading?: boolean;
   error?: string | null;
   onLogin: (email: string, password: string) => void;
