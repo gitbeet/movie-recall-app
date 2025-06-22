@@ -5,7 +5,7 @@ import { MemoryRouter } from "react-router-dom";
 import userEvent from "@testing-library/user-event";
 
 const renderSignInForm = (props: Partial<LoginFormProps> = {}) => {
-  const defaultProps = {
+  const defaultProps: LoginFormProps = {
     onLogin: vi.fn(),
     loading: false,
     error: null,

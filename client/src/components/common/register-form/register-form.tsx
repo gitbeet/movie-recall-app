@@ -16,7 +16,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 
-interface RegisterFormProps extends React.ComponentProps<"div"> {
+export interface RegisterFormProps extends React.ComponentProps<"div"> {
   loading?: boolean;
   error?: string | null;
   success?: boolean;
@@ -70,6 +70,7 @@ export function RegisterForm({
             <form
               className="p-6 md:p-8"
               onSubmit={handleSubmit(onSubmit)}
+              noValidate
             >
               <div className="flex flex-col gap-6">
                 <div className="flex flex-col items-center text-center">
@@ -83,7 +84,7 @@ export function RegisterForm({
                   name="email"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Email</FormLabel>
+                      <FormLabel htmlFor="email">Email</FormLabel>
                       <FormControl>
                         <Input
                           id="email"
@@ -104,7 +105,7 @@ export function RegisterForm({
                   name="password"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Password</FormLabel>
+                      <FormLabel htmlFor="password">Password</FormLabel>
                       <FormControl>
                         <Input
                           id="password"
@@ -123,7 +124,9 @@ export function RegisterForm({
                   name="confirmPassword"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Confirm Password</FormLabel>
+                      <FormLabel htmlFor="confirmPassword">
+                        Confirm Password
+                      </FormLabel>
                       <FormControl>
                         <Input
                           id="confirmPassword"
