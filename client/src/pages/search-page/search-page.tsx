@@ -1,7 +1,7 @@
 import { type KeyboardEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import MovieCard from "@/components/common/movie-card";
+import MovieCard from "@/components/common/movie-card/movie-card";
 import { AutoResizeTextArea } from "@/components/ui/auto-resize-text-area";
 import { Loader2, Search, X } from "lucide-react";
 import { type MovieResult, useSearch } from "@/context/search-context";

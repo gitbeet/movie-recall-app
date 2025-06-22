@@ -2,7 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useNavigate } from "react-router-dom";
 
-interface MovieCardProps {
+export interface MovieCardProps {
   id: number;
   title: string;
   description: string;
@@ -48,7 +48,12 @@ const MovieCard: React.FC<MovieCardProps> = ({
     >
       {badgeLabel && (
         <div className="absolute -top-2 -left-2 z-10">
-          <Badge variant={badgeVariant}>{badgeLabel}</Badge>
+          <Badge
+            data-testid="movie-card-badge"
+            variant={badgeVariant}
+          >
+            {badgeLabel}
+          </Badge>
         </div>
       )}
       <Card
@@ -64,7 +69,7 @@ const MovieCard: React.FC<MovieCardProps> = ({
               <img
                 data-testid="movie-card-poster"
                 src={posterUrl}
-                alt={title}
+                alt={`${title} poster`}
                 className="w-full  object-cover group-hover/card:scale-105 transition-all duration-300"
               />
             ) : (
@@ -82,7 +87,10 @@ const MovieCard: React.FC<MovieCardProps> = ({
             {title}
           </CardTitle>
           {releaseYear && (
-            <div className="text-xs text-muted-foreground mb-1">
+            <div
+              data-testid="movie-card-release-year"
+              className="text-xs text-muted-foreground mb-1"
+            >
               {releaseYear}
             </div>
           )}

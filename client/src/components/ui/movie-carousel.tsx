@@ -1,7 +1,7 @@
 import React, { useCallback } from "react";
 import useEmblaCarousel from "embla-carousel-react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import MovieCard from "../common/movie-card";
+import MovieCard from "../common/movie-card/movie-card";
 
 interface MovieSummary {
   id: number;
