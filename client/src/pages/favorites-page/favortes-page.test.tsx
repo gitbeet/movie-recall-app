@@ -13,7 +13,7 @@ const renderFavoritesPage = () => {
   );
 };
 
-const mockUseFavoritesLoggedOut = () => {
+export const mockUseFavoritesLoggedOut = () => {
   vi.spyOn(FavoritesContext, "useFavorites").mockReturnValue({
     user: null,
     favorites: [],
@@ -26,7 +26,7 @@ const mockUseFavoritesLoggedOut = () => {
   });
 };
 
-const mockUseFavoritesLoggedIn = () => {
+export const mockUseFavoritesLoggedIn = () => {
   vi.spyOn(FavoritesContext, "useFavorites").mockReturnValue({
     user: { id: 1, email: "test@example.com" },
     favorites: [
