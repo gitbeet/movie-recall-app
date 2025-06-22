@@ -2,7 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { Bookmark, LogIn, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useFavorites } from "@/context/favorites-context";
-import { ModeToggle } from "@/components/ui/mode-toggle";
+import { ModeToggle } from "@/components/ui/mode-toggle/mode-toggle";
 import MobileMenu from "../../common/mobile-menu";
 import { Logo } from "../../common/logo";
 
