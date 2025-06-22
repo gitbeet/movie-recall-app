@@ -17,6 +17,14 @@ const renderSignInForm = () => {
 };
 
 describe("LoginForm", () => {
+  test("renders the heading", () => {
+    renderSignInForm();
+    const heading = screen.getByRole("heading", {
+      name: /sign in|welcome|login/i,
+    });
+    expect(heading).toBeInTheDocument();
+  });
+
   test("renders the email input", () => {
     renderSignInForm();
     const emailInput = screen.getByRole("textbox", { name: /email/i });
@@ -50,6 +58,15 @@ describe("LoginForm", () => {
     const signInButton = screen.getByRole("button", { name: "Sign In" });
     expect(signInButton).toBeInTheDocument();
     expect(signInButton).toBeEnabled();
+  });
+
+  test("renders the sign in with google button and it is disabled", async () => {
+    renderSignInForm();
+    const signInWithGoogleButton = screen.getByRole("button", {
+      name: /sign in with google|continue with google/i,
+    });
+    expect(signInWithGoogleButton).toBeInTheDocument();
+    expect(signInWithGoogleButton).toBeDisabled();
   });
 
   test("renders the sign up link", () => {
