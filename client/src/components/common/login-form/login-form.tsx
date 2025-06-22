@@ -20,14 +20,16 @@ import {
 interface LoginFormProps extends React.ComponentProps<"div"> {
   loading?: boolean;
   error?: string | null;
-  onLogin?: (email: string, password: string) => void;
+  onLogin: (email: string, password: string) => void;
 }
 
-// Define Zod schema for login form
 const loginSchema = z.object({
-  email: z.string().email({ message: "Invalid email address" }),
+  email: z.string().min(1, { message: "Email is required" }).email({
+    message: "Invalid email address",
+  }),
   password: z
     .string()
+    .min(1, { message: "Password is required" })
     .min(6, { message: "Password must be at least 6 characters" }),
 });
 
@@ -42,12 +44,15 @@ export function LoginForm({
 }: LoginFormProps) {
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
+    defaultValues: {
+      email: "",
+      password: "",
+    },
   });
   const { handleSubmit, control } = form;
 
-  const onSubmit = (data: LoginFormValues) => {
-    if (onLogin) onLogin(data.email, data.password);
-  };
+  const onSubmit = (data: LoginFormValues) =>
+    onLogin(data.email, data.password);
 
   return (
     <div
@@ -63,6 +68,7 @@ export function LoginForm({
             <form
               className="p-6 md:p-8"
               onSubmit={handleSubmit(onSubmit)}
+              noValidate
             >
               <div className="flex flex-col gap-6">
                 <div className="flex flex-col items-center text-center">
