@@ -42,7 +42,7 @@ export const mockUseFavoritesLoggedIn = () => {
   });
 };
 
-describe("FavoritesPage", () => {
+describe("favorites-page", () => {
   describe("when user is not logged in", () => {
     beforeEach(() => {
       mockUseFavoritesLoggedOut();

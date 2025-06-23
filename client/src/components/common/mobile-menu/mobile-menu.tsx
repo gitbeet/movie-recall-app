@@ -1,10 +1,10 @@
 import { useState } from "react";
-import { ModeToggle } from "../ui/mode-toggle/mode-toggle";
-import { Button } from "../ui/button";
+import { ModeToggle } from "../../ui/mode-toggle/mode-toggle";
+import { Button } from "../../ui/button";
 import { LogIn, LogOut, Menu, X } from "lucide-react";
 import { useFavorites } from "@/context/favorites-context";
 import { useNavigate } from "react-router-dom";
-import styles from "../../styles/mobile-menu.module.css";
+import styles from "../../../styles/mobile-menu.module.css";
 import React from "react";
 
 export default function MobileMenu() {
@@ -49,9 +49,13 @@ export default function MobileMenu() {
         <Menu className="h-6 w-6" />
       </Button>
       {(open || closing) && (
-        <div className="fixed inset-0 z-50 flex">
+        <div
+          data-testid="mobile-menu"
+          className="fixed inset-0 z-50 flex"
+        >
           {/* Backdrop with blur and semitransparent effect and fade animation */}
           <div
+            data-testid="mobile-menu-backdrop"
             className={`fixed inset-0 bg-black/40 backdrop-blur-md ${
               closing ? styles.backdropFadeOut : styles.backdropFadeIn
             }`}

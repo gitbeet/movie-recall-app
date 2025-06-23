@@ -1,4 +1,4 @@
-import { type FC, useEffect } from 'react';
+import { type FC, useEffect } from "react";
 
 interface TrailerModalProps {
   trailerUrl: string;
@@ -8,32 +8,31 @@ interface TrailerModalProps {
 const TrailerModal: FC<TrailerModalProps> = ({ trailerUrl, onClose }) => {
   useEffect(() => {
     const handleEsc = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
+      if (event.key === "Escape") {
         onClose();
       }
     };
-    window.addEventListener('keydown', handleEsc);
+    window.addEventListener("keydown", handleEsc);
 
     return () => {
-      window.removeEventListener('keydown', handleEsc);
+      window.removeEventListener("keydown", handleEsc);
     };
   }, [onClose]);
 
   return (
-    <div 
+    <div
       className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50"
       onClick={onClose}
     >
-      <div 
+      <div
         className="bg-background rounded-lg shadow-2xl overflow-hidden w-full max-w-4xl mx-4"
         onClick={(e) => e.stopPropagation()}
       >
-                <div className="aspect-video">
-          <iframe 
+        <div className="aspect-video">
+          <iframe
             src={trailerUrl}
             title="Movie Trailer"
-            frameBorder="0" 
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             allowFullScreen
             className="w-full h-full"
           ></iframe>
