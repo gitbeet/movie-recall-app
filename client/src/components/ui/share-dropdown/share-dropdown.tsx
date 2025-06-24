@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Check, Copy, Mail } from "lucide-react";
+import { PopoverContent } from "../popover";
 
 const xIcon = (
   <svg
@@ -101,32 +102,38 @@ export const ShareDropdown: React.FC<ShareDropdownProps> = ({
   };
 
   return (
-    <ul className={"py-2 " + (className || "")}>
-      {socialLinks.map((item) => (
-        <li key={item.name}>
-          <a
-            href={item.getUrl(shareUrl, shareTitle)}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center gap-2 px-4 py-2 hover:bg-accent transition-colors text-sm"
+    <PopoverContent
+      aria-label="Share options"
+      align="end"
+      className="p-0 w-48"
+    >
+      <ul className={"py-2 " + (className || "")}>
+        {socialLinks.map((item) => (
+          <li key={item.name}>
+            <a
+              href={item.getUrl(shareUrl, shareTitle)}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 px-4 py-2 hover:bg-accent transition-colors text-sm"
+            >
+              {item.icon} {item.name}
+            </a>
+          </li>
+        ))}
+        <li>
+          <button
+            className="flex items-center gap-2 px-4 py-2 w-full hover:bg-accent transition-colors text-sm"
+            onClick={handleCopy}
           >
-            {item.icon} {item.name}
-          </a>
+            {copied ? (
+              <Check className="w-4 h-4 text-green-600" />
+            ) : (
+              <Copy className="w-4 h-4" />
+            )}
+            {copied ? "Copied!" : "Copy Link"}
+          </button>
         </li>
-      ))}
-      <li>
-        <button
-          className="flex items-center gap-2 px-4 py-2 w-full hover:bg-accent transition-colors text-sm"
-          onClick={handleCopy}
-        >
-          {copied ? (
-            <Check className="w-4 h-4 text-green-600" />
-          ) : (
-            <Copy className="w-4 h-4" />
-          )}
-          {copied ? "Copied!" : "Copy Link"}
-        </button>
-      </li>
-    </ul>
+      </ul>
+    </PopoverContent>
   );
 };

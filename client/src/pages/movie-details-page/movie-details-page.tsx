@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import ImageCarousel from "@/components/ui/image-carousel";
 import { PlayCircle, Bookmark, ArrowLeft, ExternalLink } from "lucide-react";
-import { ShareButton } from "@/components/ui/share-button";
+import { ShareButton } from "@/components/ui/share-button/share-button";
 import TrailerModal from "@/components/modals/trailer-modal";
 import MovieCarousel from "@/components/ui/movie-carousel";
 import CastCarousel from "@/components/ui/cast-carousel";
