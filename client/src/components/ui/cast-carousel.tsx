@@ -1,8 +1,9 @@
 import React from "react";
 import useEmblaCarousel from "embla-carousel-react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { CastMemberCard } from "../cast-member-card/cast-member-card";
 
-interface CastMember {
+export interface CastMember {
   id: number;
   name: string;
   character: string;
@@ -37,42 +38,10 @@ const CastCarousel: React.FC<CastCarouselProps> = ({ cast }) => {
       >
         <div className="flex -ml-2">
           {cast.map((member, idx) => (
-            <div
-              data-testid="cast-member"
+            <CastMemberCard
               key={member.name + idx}
-              className="flex-grow-0 flex-shrink-0 px-4 w-32"
-            >
-              <a
-                href={member.imdbUrl || member.tmdbUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex flex-col items-center hover:scale-105 transition-transform"
-              >
-                {member.profileUrl ? (
-                  <img
-                    src={member.profileUrl}
-                    alt={member.name}
-                    className="w-20 h-20 rounded-full object-cover shadow-md mb-2 border-2 border-transparent hover:border-primary"
-                  />
-                ) : (
-                  <div className="w-20 h-20 rounded-full bg-muted flex items-center justify-center mb-2 text-muted-foreground text-xl border-2 border-transparent hover:border-primary">
-                    ?
-                  </div>
-                )}
-                <span
-                  data-testid="cast-member-name"
-                  className="font-semibold text-sm text-center line-clamp-2 hover:underline"
-                >
-                  {member.name}
-                </span>
-                <span
-                  data-testid="cast-member-character"
-                  className="text-xs text-muted-foreground text-center line-clamp-2"
-                >
-                  {member.character}
-                </span>
-              </a>
-            </div>
+              member={member}
+            />
           ))}
         </div>
       </div>
