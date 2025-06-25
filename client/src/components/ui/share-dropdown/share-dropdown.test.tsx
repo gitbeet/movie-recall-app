@@ -18,7 +18,7 @@ const renderShareDropdown = () => {
 };
 
 describe("share-dropdown", () => {
-  test("displays facebook share link", async () => {
+  test("displays facebook share link and the link has the correct url", async () => {
     renderShareDropdown();
 
     const facebookLink = await screen.findByRole("link", { name: /facebook/i });
@@ -30,7 +30,7 @@ describe("share-dropdown", () => {
     );
   });
 
-  test("displays x share link", async () => {
+  test("displays x share link and the link has the correct url", async () => {
     renderShareDropdown();
 
     const xLink = await screen.findByRole("link", { name: /x/i });
@@ -42,7 +42,7 @@ describe("share-dropdown", () => {
     );
   });
 
-  test("displays linkedin share link", async () => {
+  test("displays linkedin share link and the link has the correct url", async () => {
     renderShareDropdown();
 
     const linkedinLink = await screen.findByRole("link", { name: /linkedin/i });
@@ -54,7 +54,7 @@ describe("share-dropdown", () => {
     );
   });
 
-  test("displays email share link", async () => {
+  test("displays email share link and the link has the correct url", async () => {
     renderShareDropdown();
 
     const emailLink = await screen.findByRole("link", { name: /email/i });
@@ -66,7 +66,7 @@ describe("share-dropdown", () => {
     );
   });
 
-  test("displays copy link", async () => {
+  test("displays copy link and the link has the correct url", async () => {
     renderShareDropdown();
 
     const copyLink = await screen.findByRole("button", { name: /copy/i });
