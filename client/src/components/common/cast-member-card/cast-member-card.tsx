@@ -1,5 +1,5 @@
 import { User } from "lucide-react";
-import type { CastMember } from "../ui/cast-carousel";
+import type { CastMember } from "../../ui/cast-carousel";
 
 export const CastMemberCard = ({ member }: { member: CastMember }) => {
   return (

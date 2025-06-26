@@ -1,8 +1,8 @@
-import { Button } from "../button";
+import { Button } from "../../ui/button";
 import { Share2 } from "lucide-react";
 import React from "react";
 import { ShareDropdown } from "../share-dropdown/share-dropdown";
-import { Popover, PopoverTrigger } from "../popover";
+import { Popover, PopoverTrigger } from "../../ui/popover";
 
 interface ShareButtonProps {
   url?: string;

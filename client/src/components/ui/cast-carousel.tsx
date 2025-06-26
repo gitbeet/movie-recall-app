@@ -1,7 +1,7 @@
 import React from "react";
 import useEmblaCarousel from "embla-carousel-react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { CastMemberCard } from "../cast-member-card/cast-member-card";
+import { CastMemberCard } from "../common/cast-member-card/cast-member-card";
 
 export interface CastMember {
   id: number;

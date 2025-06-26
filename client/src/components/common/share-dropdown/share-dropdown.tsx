@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Check, Copy, Mail } from "lucide-react";
-import { PopoverContent } from "../popover";
+import { PopoverContent } from "../../ui/popover";
 
 const xIcon = (
   <svg

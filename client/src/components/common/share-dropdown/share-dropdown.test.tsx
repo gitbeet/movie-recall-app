@@ -1,6 +1,6 @@
 import { describe, test, expect, vi } from "vitest";
 import { render, screen } from "@/test-utils"; // Using screen is key
-import { Popover, PopoverContent } from "../popover";
+import { Popover, PopoverContent } from "../../ui/popover";
 import { ShareDropdown } from "./share-dropdown";
 import userEvent from "@testing-library/user-event";
 

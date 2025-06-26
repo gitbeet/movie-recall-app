@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from "react";
 import useEmblaCarousel from "embla-carousel-react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import ImageModal from "../modals/image-modal";
+import ImageModal from "../../modals/image-modal";
 
 interface ImageCarouselProps {
   images: string[];
@@ -62,7 +62,7 @@ const ImageCarousel: React.FC<ImageCarouselProps> = ({ images }) => {
       </div>
 
       <button
-        className="absolute top-1/2 -translate-y-1/2 left-2 bg-background/50 text-foreground rounded-full p-2 hover:bg-background/75 transition-all opacity-0 group-hover:opacity-100 disabled:opacity-0 z-10"
+        className="absolute top-1/2 -translate-y-1/2 left-2 bg-background/50 text-foreground rounded-full p-2 hover:bg-background/75 transition-all opacity-0 group-hover:opacity-100 disabled:opacity-50 z-10"
         onClick={scrollPrev}
         aria-label="Previous slide"
       >

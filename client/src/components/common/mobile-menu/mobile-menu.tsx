@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ModeToggle } from "../../ui/mode-toggle/mode-toggle";
+import { ModeToggle } from "../mode-toggle/mode-toggle";
 import { Button } from "../../ui/button";
 import { LogIn, LogOut, Menu, X } from "lucide-react";
 import { useFavorites } from "@/context/favorites-context";
