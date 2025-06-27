@@ -1,28 +1,33 @@
-import { type FC, useEffect } from 'react';
-import { X, ChevronLeft, ChevronRight } from 'lucide-react';
+import { type FC, useEffect } from "react";
+import { X, ChevronLeft, ChevronRight } from "lucide-react";
 
-interface ImageModalProps {
+export interface ImageModalProps {
   imageUrl: string;
   onClose: () => void;
   onNext: () => void;
   onPrev: () => void;
 }
 
-const ImageModal: FC<ImageModalProps> = ({ imageUrl, onClose, onNext, onPrev }) => {
+const ImageModal: FC<ImageModalProps> = ({
+  imageUrl,
+  onClose,
+  onNext,
+  onPrev,
+}) => {
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
+      if (event.key === "Escape") {
         onClose();
-      } else if (event.key === 'ArrowRight') {
+      } else if (event.key === "ArrowRight") {
         onNext();
-      } else if (event.key === 'ArrowLeft') {
+      } else if (event.key === "ArrowLeft") {
         onPrev();
       }
     };
-    window.addEventListener('keydown', handleKeyDown);
+    window.addEventListener("keydown", handleKeyDown);
 
     return () => {
-      window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener("keydown", handleKeyDown);
     };
   }, [onClose, onNext, onPrev]);
 
@@ -35,8 +40,12 @@ const ImageModal: FC<ImageModalProps> = ({ imageUrl, onClose, onNext, onPrev }) 
         className="relative w-full h-full flex items-center justify-center"
         onClick={(e) => e.stopPropagation()}
       >
-        <img src={imageUrl} alt="Enlarged view" className="max-w-[90vw] max-h-[90vh] object-contain rounded-lg" />
-        
+        <img
+          src={imageUrl}
+          alt="Enlarged view"
+          className="max-w-[90vw] max-h-[90vh] object-contain rounded-lg"
+        />
+
         <button
           onClick={onClose}
           className="absolute top-4 right-4 bg-black/50 text-white rounded-full p-2 hover:bg-black/75 transition-all z-10"
