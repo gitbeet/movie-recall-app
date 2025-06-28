@@ -66,6 +66,7 @@ const MovieDetailsPage = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isTrailerOpen, setIsTrailerOpen] = useState(false);
+  const [isTooltipOpen, setIsTooltipOpen] = useState(false);
 
   // Favorites context
   const { user, addToFavorites, removeFromFavorites, isInFavorites, loading } =
@@ -383,8 +384,17 @@ const MovieDetailsPage = () => {
                   </span>
                 </Button>
               ) : (
-                <Tooltip>
-                  <TooltipTrigger asChild>
+                <Tooltip
+                  open={isTooltipOpen}
+                  onOpenChange={setIsTooltipOpen}
+                >
+                  <TooltipTrigger
+                    asChild
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setIsTooltipOpen((prev) => !prev);
+                    }}
+                  >
                     <Button
                       size="lg"
                       variant={"outline"}
