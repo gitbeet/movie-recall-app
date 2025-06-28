@@ -1,6 +1,6 @@
 import { describe, expect, test } from "vitest";
 import { CastMemberCard } from "./cast-member-card";
-import type { CastMember } from "../../ui/cast-carousel";
+import type { CastMember } from "../cast-carousel/cast-carousel";
 import { render, screen } from "@testing-library/react";
 
 const castMember: CastMember = {
