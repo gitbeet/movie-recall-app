@@ -7,7 +7,7 @@ import ImageCarousel from "@/components/common/image-carousel/image-carousel";
 import { PlayCircle, Bookmark, ArrowLeft, ExternalLink } from "lucide-react";
 import { ShareButton } from "@/components/common/share-button/share-button";
 import TrailerModal from "@/components/modals/trailer-modal/trailer-modal";
-import MovieCarousel from "@/components/ui/movie-carousel";
+import MovieCarousel from "@/components/common/movie-carousel/movie-carousel";
 import CastCarousel from "@/components/common/cast-carousel/cast-carousel";
 import { useFavorites } from "@/context/favorites-context";
 import {
